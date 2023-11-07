@@ -20,10 +20,13 @@ function boostrap() {
       origin: ["*"],
     })
   );
-  // app.use("/", (req, res) => {
-  //   res.status(200).send("TESTING APP WORKS");
-  // });
+
   app.use("/api/v1", incomeRouter);
+
+  app.use("/", (req, res) => {
+    res.status(200).send("TESTING APP WORKS");
+  });
+
   app.use(cookieParser());
 
   try {
