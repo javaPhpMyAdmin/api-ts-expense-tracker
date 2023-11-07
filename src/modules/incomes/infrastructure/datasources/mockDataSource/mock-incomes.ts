@@ -1,4 +1,4 @@
-import { Income } from "../../domain/income.entity";
+import { Income } from "../../../domain/income.entity";
 
 export const Incomes: Income[] = [
   {
@@ -16,6 +16,15 @@ export const Incomes: Income[] = [
     date: "06-11-2023",
     description: "another income test",
     amount: 20,
+    type: "income",
+    category: "freelancing",
+  },
+  {
+    id: "3",
+    title: "testing dssdasdasdasdasdaadas",
+    date: "06-11-2023",
+    description: "another income test",
+    amount: 40,
     type: "income",
     category: "freelancing",
   },

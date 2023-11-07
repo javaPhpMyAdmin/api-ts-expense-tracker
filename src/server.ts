@@ -3,8 +3,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import "./shared/infrastructure/load-env-vars";
-import incomeRouter from "./modules/incomes/infrastructure/api/income.router";
 import config from "./shared/infrastructure/config";
+import incomeRouter from "./modules/incomes/infrastructure/api/income.router";
+// import { config } from "@config";
 
 async function connectToMongoDb(connectionString: string) {
   await mongoose.connect(connectionString);

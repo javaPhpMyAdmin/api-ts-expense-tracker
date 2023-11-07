@@ -13,4 +13,8 @@ incomeRouter.get(
   incomeController.getIncomesById.bind(incomeController)
 );
 
+incomeRouter.post(
+  "/add-income",
+  incomeController.registerIncome.bind(incomeController)
+);
 export default incomeRouter;

@@ -9,9 +9,9 @@ export class GetIncomeById {
   ) {}
   async getIncomeById(incomeId: string): Promise<Income | null> {
     this.logger.info(
-      `[Get income by Id] - Getting a income with id ${incomeId}`
+      `[Get income by Id] - Getting an income with id: ${incomeId}`
     );
-    const income = this.incomeRepo.getById(incomeId);
+    const income = this.incomeRepo.getIncomeById(incomeId);
 
     if (!income) {
       const error = new Error(`Income not found: ${incomeId}`);
