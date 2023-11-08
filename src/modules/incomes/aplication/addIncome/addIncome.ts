@@ -1,4 +1,4 @@
-import { Logger } from "../../../../shared/domain/logger";
+import { Logger } from "../../../../shared/domain/logger/logger";
 import { AddIncomeDto } from "../../domain/dtos/addIncome.dto";
 import { Income } from "../../domain/income.entity";
 import { IncomeRepository } from "../../domain/income.repository";

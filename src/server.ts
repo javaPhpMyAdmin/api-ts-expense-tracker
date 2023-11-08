@@ -3,16 +3,11 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import "./shared/infrastructure/load-env-vars";
-import config from "./shared/infrastructure/config";
+import envs from "./shared/infrastructure/envs/envs";
 import incomeRouter from "./modules/incomes/infrastructure/api/income.router";
-// import { config } from "@config";
+import { MongoDatabase } from "./data/mongodb/mongo-database";
 
-async function connectToMongoDb(connectionString: string) {
-  await mongoose.connect(connectionString);
-  console.log("Database is connected");
-}
-
-function boostrap() {
+async function boostrap() {
   const app = express();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -29,15 +24,16 @@ function boostrap() {
   });
 
   app.use(cookieParser());
-
   try {
-    connectToMongoDb(config.MONGO_DB_CONNECTION!);
-  } catch (e) {
-    console.log("Error connecting to MongoDB ", e);
+    await MongoDatabase.connect({
+      mongoUrl: envs.MONGO_URL,
+    });
+  } catch (error) {
+    console.log(error);
   }
 
-  app.listen(config.PORT, () => {
-    console.log(`SERVER RUNNING ON PORT ${config.PORT}`);
+  app.listen(envs.PORT, () => {
+    console.log(`[SUCCESS] - SERVER RUNNING ON PORT ${envs.PORT}`);
   });
 }
 

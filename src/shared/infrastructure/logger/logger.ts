@@ -1,4 +1,4 @@
-import { Logger, Message } from "../../domain/logger";
+import { Logger, Message } from "../../domain/logger/logger";
 
 export class ConsoleLogger implements Logger {
   info(message: Message): void {
