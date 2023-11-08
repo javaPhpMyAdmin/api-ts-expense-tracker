@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { incomeController } from "../dependencies";
+import { incomeController } from "../infrastructure/dependencies";
 
-const incomeRouter = Router();
+export const incomeRouter = Router();
 
 incomeRouter.get(
   "/get-incomes",
@@ -17,4 +17,3 @@ incomeRouter.post(
   "/add-income",
   incomeController.registerIncome.bind(incomeController)
 );
-export default incomeRouter;

@@ -1,8 +1,7 @@
 import { get } from "env-var";
-
-const envs = {
+const API_VERSION = "/api/v1";
+export const envs = {
   PORT: get("PORT").required().asPortNumber(),
   MONGO_URL: get("MONGO_URL").required().asString(),
+  API_VERSION,
 };
-
-export default envs;

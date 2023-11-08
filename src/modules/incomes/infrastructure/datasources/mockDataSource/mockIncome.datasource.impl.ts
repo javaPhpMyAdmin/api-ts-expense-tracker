@@ -1,6 +1,6 @@
-import { IncomeDataSource } from "../../../domain/income.datasource";
+import { IncomeDataSource } from "../../../domain/datasources/income.datasource";
 import { AddIncomeDto } from "../../../domain/dtos/addIncome.dto";
-import { Income } from "../../../domain/income.entity";
+import { Income } from "../../../domain/entities/income.entity";
 import { CustomError } from "../../../../../shared/domain/errors";
 import { Incomes } from "./mock-incomes";
 

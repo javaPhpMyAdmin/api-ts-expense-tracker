@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { AddIncome, GetAllIncomes, GetIncomeById } from "../../aplication";
-import { AddIncomeDto } from "../../domain/dtos/addIncome.dto";
+import { AddIncome, GetAllIncomes, GetIncomeById } from "../aplication";
+import { AddIncomeDto } from "../domain/dtos/addIncome.dto";
 
 export class IncomeController {
   constructor(
@@ -35,8 +35,9 @@ export class IncomeController {
 
       const income = await this.addIncome.registerIncome(addIncomeDto!);
       res.json(income!);
-    } catch (e) {
-      console.log("INSIDE CONTROLLER ERROR", e);
+    } catch (error) {
+      res.status(500).json({ error });
+      console.log("INSIDE CONTROLLER ERROR", error);
     }
   }
 

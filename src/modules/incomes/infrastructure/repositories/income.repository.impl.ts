@@ -1,6 +1,6 @@
-import { IncomeDataSource } from "../domain/income.datasource";
-import { Income } from "../domain/income.entity";
-import { IncomeRepository } from "../domain/income.repository";
+import { IncomeDataSource } from "../../domain/datasources/income.datasource";
+import { Income } from "../../domain/entities/income.entity";
+import { IncomeRepository } from "../../domain/repositories/income.repository";
 
 export class IncomeRepositoryImpl implements IncomeRepository {
   constructor(private readonly mockIncomeDataSource: IncomeDataSource) {}

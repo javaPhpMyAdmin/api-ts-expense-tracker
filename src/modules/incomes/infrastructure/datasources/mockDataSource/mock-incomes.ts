@@ -1,4 +1,4 @@
-import { Income } from "../../../domain/income.entity";
+import { Income } from "../../../domain/entities/income.entity";
 
 export const Incomes: Income[] = [
   {

@@ -1,5 +1,5 @@
-import { AddIncomeDto } from "./dtos/addIncome.dto";
-import { Income } from "./income.entity";
+import { AddIncomeDto } from "../dtos/addIncome.dto";
+import { Income } from "../entities/income.entity";
 
 export abstract class IncomeDataSource {
   abstract addIncome(incomeToAdd: AddIncomeDto): Promise<Income>;
