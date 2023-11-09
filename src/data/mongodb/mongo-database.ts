@@ -1,3 +1,4 @@
+import { logger } from "../../shared/infrastructure/dependencies";
 import { error } from "console";
 import mongoose from "mongoose";
 
@@ -13,10 +14,10 @@ export class MongoDatabase {
       await mongoose.connect(mongoUrl, {
         dbName: dbName,
       });
-      console.log("[SUCCESS] - Connected to MongoDB");
+      logger.info("[SUCCESS] - Connected to MongoDB");
       return true;
     } catch (e) {
-      console.log("[ERROR] - Unable to connect to Mongo");
+      logger.error("[ERROR] - Unable to connect to Mongo");
       throw error;
     }
   }

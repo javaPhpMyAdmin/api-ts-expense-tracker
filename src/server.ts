@@ -1,42 +1,47 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import mongoose from "mongoose";
 import "./shared/infrastructure/envs/load-env-vars";
 import { envs } from "./shared/infrastructure/envs";
-import { incomeRouter } from "./modules/incomes/presentation";
-import { MongoDatabase } from "./data/mongodb";
+import { App } from "./shared/presentation";
+import { logger } from "./shared/infrastructure/dependencies";
 
-async function boostrap() {
-  const app = express();
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(
-    cors({
-      origin: ["*"],
-    })
-  );
-
-  app.use(`${envs.API_VERSION}`, incomeRouter);
-
-  app.use("/", (req, res) => {
-    res.status(200).send("TESTING APP WORKS");
-  });
-
-  app.use(cookieParser());
-  try {
-    await MongoDatabase.connect({
-      mongoUrl: envs.MONGO_URL,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-  app.listen(envs.PORT, () => {
-    console.log(`-------------------------------------------------`);
-    console.log(`[SUCCESS] - SERVER RUNNING ON PORT ${envs.PORT}`);
-    console.log(`-------------------------------------------------`);
-  });
+enum ExitStatus {
+  Failure = 1,
+  Success = 0,
 }
 
-boostrap();
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error(
+    `App exiting due to an unhandled promise: ${promise} and reason: ${reason}`
+  );
+  // lets throw the error and let the uncaughtException handle below handle it
+  throw reason;
+});
+
+process.on("uncaughtException", (error) => {
+  logger.error(`App exiting due to an uncaught exception: ${error}`);
+  process.exit(ExitStatus.Failure);
+});
+
+(async (): Promise<void> => {
+  try {
+    const app = new App(envs.PORT);
+    app.init();
+    app.start();
+
+    const exitSignals: NodeJS.Signals[] = ["SIGINT", "SIGTERM", "SIGQUIT"];
+    for (const exitSignal of exitSignals) {
+      process.on(exitSignal, async () => {
+        try {
+          await app.close();
+          logger.info(`[EXITED] - APP EXITED WITH SUCCESS`);
+          process.exit(ExitStatus.Success);
+        } catch (error) {
+          logger.error(`[EXITED] - APP EXITED WITH ERROR: ${error}`);
+          process.exit(ExitStatus.Failure);
+        }
+      });
+    }
+  } catch (error) {
+    logger.error(`[EXITED] - APP EXITED WITH ERROR: ${error}`);
+    process.exit(ExitStatus.Failure);
+  }
+})();
