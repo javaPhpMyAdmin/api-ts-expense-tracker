@@ -109,10 +109,10 @@
     "paths": {
       "@/config/*": ["config/*"],
       "@/helpers/*": ["helpers/*"],
-      "@/shared/*": ["shared/*"],
+      "shared/*": ["shared/*"],
       "@/modules/expenses/*": ["modules/expenses/*"],
       "@/modules/incomes/*": ["modules/incomes/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*.ts", "tests/**/*.ts"]
 }

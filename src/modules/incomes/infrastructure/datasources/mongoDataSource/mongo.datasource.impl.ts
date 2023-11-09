@@ -1,8 +1,9 @@
-import { AddIncomeDto } from "../../../domain/dtos/addIncome.dto";
-import { Income } from "../../../domain/entities/income.entity";
-import { IncomeDataSource } from "../../../domain/datasources/income.datasource";
+import { AddIncomeDto } from "../../../domain/dtos";
+import { Income } from "../../../domain/entities";
+import { IncomeDataSource } from "../../../domain/datasources";
 import { IncomeModel } from "../../../../../data/mongodb/models";
 import { CustomError } from "../../../../../shared/domain/errors";
+import { IncomeMapper } from "../../mappers";
 
 export class MongoDataSourceImpl implements IncomeDataSource {
   async addIncome(incomeToAdd: AddIncomeDto): Promise<Income> {
@@ -18,16 +19,8 @@ export class MongoDataSourceImpl implements IncomeDataSource {
       });
 
       await income.save();
-      //TODO: MAPPER TO Income ENTITY
-      return new Income(
-        income.id,
-        income.title,
-        income.description,
-        income.category,
-        income.date,
-        income.type,
-        income.amount
-      );
+
+      return IncomeMapper.incomeEntityFromObject(income);
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

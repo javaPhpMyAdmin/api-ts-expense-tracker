@@ -10,14 +10,16 @@ enum ExitStatus {
 
 process.on("unhandledRejection", (reason, promise) => {
   logger.error(
-    `App exiting due to an unhandled promise: ${promise} and reason: ${reason}`
+    `[ERROR] - APP EXITING DUE TO AN UNHANDLED PROMISE: ${promise} AND REASON: ${reason}`
   );
   // lets throw the error and let the uncaughtException handle below handle it
   throw reason;
 });
 
 process.on("uncaughtException", (error) => {
-  logger.error(`App exiting due to an uncaught exception: ${error}`);
+  logger.error(
+    `[ERROR] - APP EXITING DUE TO AN UNCAUGHT EXCEPTION: ${error.message}`
+  );
   process.exit(ExitStatus.Failure);
 });
 

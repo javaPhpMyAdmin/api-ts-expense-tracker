@@ -1,11 +1,11 @@
 import { AddIncome, GetAllIncomes, GetIncomeById } from "../aplication";
 import { IncomeController } from "../presentation";
-import { logger } from "../../../shared/infrastructure/dependencies";
+import { logger } from "../../../shared/infrastructure";
 import { IncomeDataSourceImpl, MongoDataSourceImpl } from "./datasources";
 import { IncomeRepositoryImpl } from "./repositories";
 
 //CREATE DATASOURCES
-// const mockIncomeDataSource = new IncomeDataSourceImpl();
+const mockIncomeDataSource = new IncomeDataSourceImpl();
 const incomeDataSource = new MongoDataSourceImpl();
 //CREATE REPOSITORY
 const incomeRepository = new IncomeRepositoryImpl(incomeDataSource);

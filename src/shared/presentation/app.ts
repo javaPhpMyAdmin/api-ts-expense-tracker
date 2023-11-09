@@ -23,12 +23,12 @@ export class App {
     this.app = express();
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(cookieParser());
     this.app.use(
       cors({
         origin: ["*"],
       })
     );
-    this.app.use(cookieParser());
     this.setupRouters();
   }
 
@@ -59,6 +59,9 @@ export class App {
 
   private setupRouters(): void {
     this.app?.use(`${envs.API_VERSION}`, incomeRouter);
+    this.app?.use("/", (req, res) => {
+      res.status(200).send("IT WORKS");
+    });
   }
 
   public start(): void {

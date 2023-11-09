@@ -1,3 +1,4 @@
+import { prettyFactory, colorizerFactory } from "pino-pretty";
 import { Logger, Message } from "../../domain/logger/logger";
 import pino from "pino";
 
@@ -6,7 +7,7 @@ const logger = pino({
     target: "pino-pretty",
     options: {
       colorize: true,
-      translateTime: "SYS:HH:MM",
+      translateTime: "SYS:standard",
       levelPrefix: "🚀",
     },
   },
