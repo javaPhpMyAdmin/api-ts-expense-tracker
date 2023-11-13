@@ -3,6 +3,7 @@ import { AddIncomeDto } from "../../domain/dtos";
 import { Income } from "../../domain/entities";
 
 export class IncomeMapper {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static incomeEntityFromObject(object: { [key: string]: any }) {
     if (!object.id || !object._id)
       throw CustomError.badRequest("Missing id for income");

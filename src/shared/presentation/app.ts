@@ -1,12 +1,11 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import { MongoDatabase } from "../../data/mongodb";
-import { Application } from "express";
-import { envs } from "../infrastructure/envs";
-import { Server } from "http";
-import { incomeRouter } from "../../modules/incomes/presentation";
-import { logger } from "../../shared/infrastructure/dependencies";
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { MongoDatabase } from '../../data/mongodb';
+import { Application } from 'express';
+import { envs } from '../infrastructure/envs';
+import { Server } from 'http';
+import { httpRouter, logger } from '../../shared/infrastructure/dependencies';
 
 export class App {
   private server?: Server;
@@ -26,7 +25,7 @@ export class App {
     this.app.use(cookieParser());
     this.app.use(
       cors({
-        origin: ["*"],
+        origin: ['*'],
       })
     );
     this.setupRouters();
@@ -58,10 +57,7 @@ export class App {
   }
 
   private setupRouters(): void {
-    this.app?.use(`${envs.API_VERSION}`, incomeRouter);
-    this.app?.use("/", (req, res) => {
-      res.status(200).send("IT WORKS");
-    });
+    httpRouter.setApplication(this.getApp());
   }
 
   public start(): void {

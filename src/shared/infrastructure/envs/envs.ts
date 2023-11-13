@@ -1,8 +1,11 @@
-import { get } from "env-var";
-const API_VERSION = "/api/v1";
+import '../../../shared/infrastructure/envs/load-env-vars';
+const API_VERSION_PREFIX = '/api/v1';
+const API_VERSION_PREFIX_AUTH = `${API_VERSION_PREFIX}/auth`;
+
 export const envs = {
-  PORT: get("PORT").required().asPortNumber(),
-  MONGO_URL: get("MONGO_URL").required().asString(),
-  API_VERSION,
-  DB_NAME: get("MONGO_DBNAME").required().asString(),
+  PORT: Number(process.env.PORT),
+  MONGO_URL: String(process.env.MONGO_URL),
+  API_VERSION_PREFIX,
+  API_VERSION_PREFIX_AUTH,
+  DB_NAME: String(process.env.MONGO_DBNAME),
 };

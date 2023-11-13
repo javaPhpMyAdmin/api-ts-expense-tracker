@@ -1,23 +1,39 @@
-import { IncomeDataSource } from "../../domain/datasources/income.datasource";
-import { Income } from "../../domain/entities/income.entity";
-import { IncomeRepository } from "../../domain/repositories/income.repository";
+import { CustomError } from '../../../../shared/domain';
+import { IncomeDataSource } from '../../domain/datasources';
+import { Income } from '../../domain/entities';
+import { IncomeRepository } from '../../domain/repositories';
 
 export class IncomeRepositoryImpl implements IncomeRepository {
-  constructor(private readonly mockIncomeDataSource: IncomeDataSource) {}
+  constructor(private readonly incomeDataSource: IncomeDataSource) {}
+
   async getIncomeById(id: string): Promise<Income | null> {
-    const income = this.mockIncomeDataSource.getIncomeById(id);
-    return income;
+    try {
+      const income = await this.incomeDataSource.getIncomeById(id);
+      return income;
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
   }
+
   async getAllIncomes(): Promise<Income[] | []> {
-    const incomes = this.mockIncomeDataSource.getAllIncomes();
-    if (!incomes) return [];
-    return incomes;
+    try {
+      const incomes = await this.incomeDataSource.getAllIncomes();
+      if (!incomes) return [];
+      return incomes;
+    } catch (error) {
+      return [];
+    }
   }
+
   async deleteIncome(id: string): Promise<Income[]> {
-    throw new Error("no implemented yet");
+    throw new Error('no implemented yet');
   }
+
   async addIncome(income: Income): Promise<Income> {
-    const incomeAdded = this.mockIncomeDataSource.addIncome(income);
+    const incomeAdded = await this.incomeDataSource.addIncome(income);
     return incomeAdded;
   }
 }

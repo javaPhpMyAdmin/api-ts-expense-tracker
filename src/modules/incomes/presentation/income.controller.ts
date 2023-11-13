@@ -1,51 +1,63 @@
-import { Request, Response } from "express";
-import { AddIncome, GetAllIncomes, GetIncomeById } from "../aplication";
-import { AddIncomeDto } from "../domain/dtos/addIncome.dto";
-
+import { Request, Response } from 'express';
+import { AddIncome, GetAllIncomes, GetIncomeById } from '../aplication';
+import { AddIncomeDto } from '../domain/dtos/addIncome.dto';
+import { CustomError } from '../../../shared/domain/errors';
+import { Logger } from '../../../shared/domain/logger';
 export class IncomeController {
   constructor(
     private readonly getAllIncomes: GetAllIncomes,
     private readonly getIncomeById: GetIncomeById,
-    private readonly addIncome: AddIncome
+    private readonly addIncome: AddIncome,
+    private readonly logger: Logger
   ) {}
 
-  async getIncomes(req: Request, res: Response) {
-    try {
-      const incomes = await this.getAllIncomes.getAllIncomes();
-      res.status(200).send({ incomes: incomes });
-    } catch (e) {
-      res.status(400).send({ error: e });
+  private handleError = (error: unknown, res: Response) => {
+    if (error instanceof CustomError) {
+      this.logger.error(error.message);
+      return res.status(error.statusCode).json({
+        message: error.message,
+      });
     }
+
+    this.logger.error(String(error));
+
+    res.status(500).json(CustomError.internalServer());
+  };
+
+  getIncomes = (req: Request, res: Response) => {
+    this.getAllIncomes
+      .getAllIncomes()
+      .then((incomes) => {
+        res.status(200).send({ incomes: incomes });
+      })
+      .catch((e) => this.handleError(e, res));
+  };
+
+  getIncomesById(req: Request, res: Response) {
+    const { id } = req.params;
+
+    this.getIncomeById
+      .getIncomeById(id)
+      .then((income) => res.status(200).send({ income: income }))
+      .catch((e) => this.handleError(e, res));
   }
 
-  async getIncomesById(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const income = await this.getIncomeById.getIncomeById(id);
-      res.status(200).send({ income: income });
-    } catch (e) {
-      res.status(400).send({ error: e });
-    }
-  }
+  registerIncome(req: Request, res: Response) {
+    const [error, addIncomeDto] = AddIncomeDto.create(req.body);
 
-  async registerIncome(req: Request, res: Response) {
-    try {
-      const [error, addIncomeDto] = AddIncomeDto.create(req.body);
-      if (error) res.status(400).json({ error });
+    if (error) res.status(400).send({ error: error });
 
-      const income = await this.addIncome.registerIncome(addIncomeDto!);
-      res.json(income!);
-    } catch (error) {
-      res.status(500).json({ error });
-      console.log("INSIDE CONTROLLER ERROR", error);
-    }
+    this.addIncome
+      .registerIncome(addIncomeDto!)
+      .then((income) => res.status(200).json(income!))
+      .catch((e) => this.handleError(e, res));
   }
 
   async deleteIncome(req: Request, res: Response) {
     try {
-      res.status(200).send({ message: "income deleted successfully" });
+      res.status(200).send({ message: 'income deleted successfully' });
     } catch (e) {
-      res.status(400).send({ error: e });
+      this.handleError(e, res);
     }
   }
 }

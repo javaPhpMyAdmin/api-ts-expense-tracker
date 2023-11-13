@@ -1,9 +1,9 @@
-import { AddIncomeDto } from "../../../domain/dtos";
-import { Income } from "../../../domain/entities";
-import { IncomeDataSource } from "../../../domain/datasources";
-import { IncomeModel } from "../../../../../data/mongodb/models";
-import { CustomError } from "../../../../../shared/domain/errors";
-import { IncomeMapper } from "../../mappers";
+import { AddIncomeDto } from '../../../domain/dtos';
+import { Income } from '../../../domain/entities';
+import { IncomeDataSource } from '../../../domain/datasources';
+import { IncomeModel } from '../../../../../data/mongodb/models';
+import { CustomError } from '../../../../../shared/domain/errors';
+import { IncomeMapper } from '../../mappers';
 
 export class MongoDataSourceImpl implements IncomeDataSource {
   async addIncome(incomeToAdd: AddIncomeDto): Promise<Income> {
@@ -31,11 +31,33 @@ export class MongoDataSourceImpl implements IncomeDataSource {
   async getAllIncomes(): Promise<Income[]> {
     try {
       const incomes = await IncomeModel.find();
+
       const incomesMapped = incomes.map(
         ({ id, title, description, category, amount, type, date }) =>
           new Income(id, title, description, category, date, type, amount)
       );
+
       return incomesMapped;
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+
+      throw CustomError.internalServer();
+    }
+  }
+  async getIncomeById(incomeId: string): Promise<Income | null> {
+    try {
+      const income = await IncomeModel.findById(incomeId);
+
+      if (!income) {
+        const error = new Error(
+          `[Use case - GetIncomeById- ERROR] - Income not found: ${incomeId}`
+        );
+        throw error;
+      }
+
+      return IncomeMapper.incomeEntityFromObject(income);
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
@@ -43,10 +65,7 @@ export class MongoDataSourceImpl implements IncomeDataSource {
       throw CustomError.internalServer();
     }
   }
-  async getIncomeById(incomeId: string): Promise<Income | null> {
-    throw new Error("Method not implemented.");
-  }
   async deleteIncome(incomeId: string): Promise<Income> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 }

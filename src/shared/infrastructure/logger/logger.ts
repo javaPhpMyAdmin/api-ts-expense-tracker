@@ -1,14 +1,13 @@
-import { prettyFactory, colorizerFactory } from "pino-pretty";
-import { Logger, Message } from "../../domain/logger/logger";
-import pino from "pino";
+import { Logger, Message } from '../../domain/logger/logger';
+import pino from 'pino';
 
 const logger = pino({
   transport: {
-    target: "pino-pretty",
+    target: 'pino-pretty',
     options: {
       colorize: true,
-      translateTime: "SYS:standard",
-      levelPrefix: "🚀",
+      translateTime: 'SYS:standard',
+      levelPrefix: '🚀',
     },
   },
 });
