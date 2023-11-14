@@ -3,10 +3,14 @@ export class AuthUtility {
 
   //generate token function class using JWT token
   generateToken(email: string): string {
-    return '';
+    return "";
   }
 
   generateRefreshToken(eamil: string): string {
-    return '';
+    return "";
+  }
+
+  verifyToken(token: string): boolean {
+    return false;
   }
 }

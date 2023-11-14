@@ -1,7 +1,7 @@
 export class User {
   constructor(
     private readonly email: string,
-    private readonly password: string,
+    private readonly password: string | undefined,
     private readonly name: string,
     private readonly lastname: string,
     private readonly phone: number,
@@ -11,7 +11,7 @@ export class User {
   public get getEmail(): string {
     return this.email;
   }
-  public get getPassword(): string {
+  public get getPassword(): string | undefined {
     return this.password;
   }
   public get getName(): string {

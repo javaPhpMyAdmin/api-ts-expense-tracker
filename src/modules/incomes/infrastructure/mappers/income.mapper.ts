@@ -13,7 +13,6 @@ export class IncomeMapper {
     if (error) throw CustomError.badRequest(error);
 
     const { title, description, category, amount, type, date } = addIncomeDto!;
-
     return new Income(
       object.id || object._id,
       title,

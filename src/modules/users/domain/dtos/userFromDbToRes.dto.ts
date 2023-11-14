@@ -1,35 +1,26 @@
 import { UserEmailDto } from ".";
 
-export class UserDto {
+export class UserFromDb {
   private constructor(
-    public emailDto: UserEmailDto,
-    public password: string,
+    public email: string,
     public name: string,
     public lastname: string,
     public phone: number,
     public address: string
   ) {}
 
-  static create(object: { [key: string]: any }): [string?, UserDto?] {
+  static create(object: { [key: string]: any }): [string?, UserFromDb?] {
     const { email, password, name, lastname, phone, address } = object;
 
     if (!name) return ["Missing name"];
     if (!email) return ["Missing email"];
-    if (!password) return ["Missing password DTO"];
     if (!phone) return ["Missing phone"];
     if (!address) return ["Missing address"];
+    if (!lastname) return ["Missing lastname"];
 
-    //check valid email
     const [error, emailDto] = UserEmailDto.create(email);
     if (error) return ["Invalid email"];
 
-    //check length of password
-    if (password.length < 5) return ["Invalid password, too short"];
-    if (password.length > 15) return ["Invalid password, too long"];
-
-    return [
-      undefined,
-      new UserDto(emailDto!, password, name, lastname, phone, address),
-    ];
+    return [undefined, new UserFromDb(email, name, lastname, phone, address)];
   }
 }
