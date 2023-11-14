@@ -44,6 +44,6 @@ enum ExitStatus {
     // }
   } catch (error) {
     logger.error(`[EXITED] - APP EXITED WITH ERROR: ${error}`);
-    process.exit(ExitStatus.Failure);
+    // process.exit(ExitStatus.Failure);
   }
 })();

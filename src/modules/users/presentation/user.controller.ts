@@ -37,11 +37,11 @@ export class UserController {
   registerUser(req: Request, res: Response) {
     const [error, userDto] = UserDto.create(req.body);
 
-    if (error) res.status(400).send({ error: error });
+    if (error) return res.status(400).send({ error: error });
 
     this.registerUserUseCase
       .registerUser(userDto!)
-      .then((user) => res.status(200).json(user!))
+      .then((user) => res.status(204).json(user!))
       .catch((e) => this.handleError(e, res));
   }
 

@@ -1,3 +1,4 @@
+import { CustomError } from '../../../../../shared/domain';
 import { Logger } from '../../../../../shared/domain/logger/logger';
 import { AddIncomeDto } from '../../../domain/dtos/addIncome.dto';
 import { Income } from '../../../domain/entities/income.entity';
@@ -22,6 +23,10 @@ export class AddIncome {
       return income;
     } catch (e) {
       this.logger.error(`${useCase} - Error adding income, ${e}`);
+      if (e instanceof CustomError) {
+        throw e;
+      }
+      throw CustomError.internalServer();
     }
   }
 }

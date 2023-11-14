@@ -45,11 +45,11 @@ export class IncomeController {
   registerIncome(req: Request, res: Response) {
     const [error, addIncomeDto] = AddIncomeDto.create(req.body);
 
-    if (error) res.status(400).send({ error: error });
+    if (error) return res.status(400).send({ error: error });
 
     this.addIncome
       .registerIncome(addIncomeDto!)
-      .then((income) => res.status(200).json(income!))
+      .then((income) => res.status(204).json(income!))
       .catch((e) => this.handleError(e, res));
   }
 

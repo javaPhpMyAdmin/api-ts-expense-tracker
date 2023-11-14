@@ -15,7 +15,7 @@ export class UserDto {
 
     if (!name) return ['Missing name'];
     if (!email) return ['Missing email'];
-    if (!password) return ['Missing password'];
+    if (!password) return ['Missing password DTO'];
     if (!phone) return ['Missing phone'];
     if (!address) return ['Missing address'];
     //TODO: VALIDATE PASSWORD AND EMAIL, LARGE PASSWORD

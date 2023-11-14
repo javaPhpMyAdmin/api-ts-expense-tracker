@@ -11,20 +11,23 @@ export class RegisterUser {
     private readonly logger: Logger
   ) {}
 
-  async registerUser(userDto: UserDto): Promise<User | null> {
+  async registerUser(userDto: UserDto): Promise<User | undefined> {
     this.logger.info(`${useCase} - REGISTERING USER...`);
-    return this.userRepository
-      .saveUser(userDto)
-      .then((user) => {
-        this.logger.info(`${useCase} - USER REGISTERED`);
-        return user;
-      })
-      .catch((err) => {
-        this.logger.error(`${useCase} - USER NOT REGISTERED`);
-        if (err instanceof CustomError) {
-          throw err;
-        }
-        throw CustomError.internalServer();
-      });
+
+    try {
+      const user = await this.userRepository.saveUser(userDto);
+      if (!user) {
+        const error = new Error('Something went wrong trying to register user');
+        throw error;
+      }
+      this.logger.info(`${useCase} - USER REGISTERED SUCCESSFULLY`);
+      return user;
+    } catch (error) {
+      this.logger.error(`${useCase} - ERROR REGISTERING USER, ${error}`);
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
   }
 }
