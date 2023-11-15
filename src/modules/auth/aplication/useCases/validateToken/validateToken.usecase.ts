@@ -1,22 +1,25 @@
+import { CustomError } from "../../../../../shared/domain";
 import { NextFunction, Request, Response } from "express";
+import { AuthUtility } from "../../../../../modules/auth/utils";
 
+const authUtility = new AuthUtility();
+
+type ValidateTokenProps = {
+  id: string;
+  email: string;
+  username: string;
+};
 export class ValidateToken {
-  public verify(req: Request): [string?, string?] {
-    const authorization = req.header("Authorization");
-    if (!authorization) return ["No token provided"];
-    if (!authorization.startsWith("Bearer "))
-      return ["Invalid Bearer token provided"];
-
-    const token = authorization.split(" ").at(1) || "";
+  async verify(accessToken: string): Promise<ValidateTokenProps> {
     try {
-      //todo
-      //const payload
-
-      return [undefined, token];
+      const payload = await authUtility.verifyAccessToken<ValidateTokenProps>(
+        accessToken
+      );
+      if (!payload) throw CustomError.unauthorized("Invalid accessToken");
+      return payload;
     } catch (error) {
-      return ["Invalid token provided"];
-      //internal server error
+      if (error instanceof CustomError) throw error;
+      throw CustomError.internalServer();
     }
-    return [,];
   }
 }

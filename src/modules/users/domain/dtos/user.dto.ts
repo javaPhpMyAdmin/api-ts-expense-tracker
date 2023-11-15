@@ -1,8 +1,9 @@
+import { Document } from "mongoose";
 import { UserEmailDto } from ".";
 
 export class UserDto {
   private constructor(
-    public emailDto: UserEmailDto,
+    public emailDto: string,
     public password: string,
     public name: string,
     public lastname: string,
@@ -21,7 +22,7 @@ export class UserDto {
 
     //check valid email
     const [error, emailDto] = UserEmailDto.create(email);
-    if (error) return ["Invalid email"];
+    if (error) return [`${error}`];
 
     //check length of password
     if (password.length < 5) return ["Invalid password, too short"];
@@ -29,7 +30,7 @@ export class UserDto {
 
     return [
       undefined,
-      new UserDto(emailDto!, password, name, lastname, phone, address),
+      new UserDto(emailDto!.email, password, name, lastname, phone, address),
     ];
   }
 }

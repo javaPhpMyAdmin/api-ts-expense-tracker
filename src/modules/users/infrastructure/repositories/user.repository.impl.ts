@@ -5,8 +5,8 @@ import {
   UserRepository,
   User,
   UserLoginDto,
-} from '../../domain';
-import { CustomError } from '../../../../shared/domain';
+} from "../../domain";
+import { CustomError } from "../../../../shared/domain";
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly userDataSource: UserDataSource) {}

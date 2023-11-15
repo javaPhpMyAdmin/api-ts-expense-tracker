@@ -30,12 +30,14 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.5",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "env-var": "^7.4.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "link-module-alias": "^1.2.0",
     "module-alias": "^2.2.3",
     "mongodb": "^6.2.0",

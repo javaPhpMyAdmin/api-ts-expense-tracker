@@ -10,17 +10,17 @@ export class UserFromDb {
   ) {}
 
   static create(object: { [key: string]: any }): [string?, UserFromDb?] {
-    const { email, password, name, lastname, phone, address } = object;
+    const { emailOb, nameObj, lastnameObj, phoneObj, addressObj } = object;
 
-    if (!name) return ["Missing name"];
-    if (!email) return ["Missing email"];
-    if (!phone) return ["Missing phone"];
-    if (!address) return ["Missing address"];
-    if (!lastname) return ["Missing lastname"];
+    if (!nameObj) return ["Missing name"];
+    if (!emailOb) return ["Missing email"];
+    if (!phoneObj) return ["Missing phone"];
+    if (!addressObj) return ["Missing address"];
+    if (!lastnameObj) return ["Missing lastname"];
 
-    const [error, emailDto] = UserEmailDto.create(email);
-    if (error) return ["Invalid email"];
-
-    return [undefined, new UserFromDb(email, name, lastname, phone, address)];
+    return [
+      undefined,
+      new UserFromDb(emailOb, nameObj, lastnameObj, phoneObj, addressObj),
+    ];
   }
 }

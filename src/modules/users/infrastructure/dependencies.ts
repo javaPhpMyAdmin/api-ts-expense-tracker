@@ -1,4 +1,4 @@
-import { ConsoleLogger } from '../../../shared/infrastructure';
+import { ConsoleLogger } from "../../../shared/infrastructure";
 import {
   RegisterUser,
   UserLogin,
@@ -6,10 +6,10 @@ import {
   GetUserByEmail,
   UpdateUser,
   DeleteUser,
-} from '../aplication';
-import { UserController } from '../presentation';
-import { MockDataSourceImpl, MongoDataSourceImpl } from './datasources';
-import { UserRepositoryImpl } from './repositories';
+} from "../aplication";
+import { UserController } from "../presentation";
+import { MockDataSourceImpl, MongoDataSourceImpl } from "./datasources";
+import { UserRepositoryImpl } from "./repositories";
 
 //LOGGER INSTANCE
 const logger = new ConsoleLogger();
@@ -20,7 +20,7 @@ const mockUserDataSource = new MockDataSourceImpl();
 const mongoDataSource = new MongoDataSourceImpl();
 
 //USER REPOSITORY --- HERE WE CAN SWITCH AND INJECT DIFERENTS DATASOURCES
-const userRepository = new UserRepositoryImpl(mongoDataSource);
+export const userRepository = new UserRepositoryImpl(mongoDataSource);
 
 //USE CASES INSTANCES//
 //REGISTER USER USECASE

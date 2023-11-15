@@ -1,10 +1,10 @@
-import { CustomError } from '../../../../../shared/domain';
-import { Logger } from '../../../../../shared/domain/logger';
-import { UserRepository } from '../../../domain';
-import { UserDto } from '../../../domain/dtos';
-import { User } from '../../../domain/entities';
+import { CustomError } from "../../../../../shared/domain";
+import { Logger } from "../../../../../shared/domain/logger";
+import { UserRepository } from "../../../domain";
+import { UserDto } from "../../../domain/dtos";
+import { User } from "../../../domain/entities";
 
-const useCase = '[Use case - RegisterUser]';
+const useCase = "[Use case - RegisterUser]";
 export class RegisterUser {
   constructor(
     private readonly userRepository: UserRepository,
@@ -17,7 +17,7 @@ export class RegisterUser {
     try {
       const user = await this.userRepository.saveUser(userDto);
       if (!user) {
-        const error = new Error('Something went wrong trying to register user');
+        const error = new Error("Something went wrong trying to register user");
         throw error;
       }
       this.logger.info(`${useCase} - USER REGISTERED SUCCESSFULLY`);
