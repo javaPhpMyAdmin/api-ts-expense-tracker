@@ -1,5 +1,4 @@
 export * from "./user.dto";
-export * from "./userLogin.dto";
+export * from "../../../auth/domain/dtos/loginUserDto.dto";
 export * from "./userEmail.dto";
-export * from "./userAuth.dto";
 export * from "./userFromDbToRes.dto";

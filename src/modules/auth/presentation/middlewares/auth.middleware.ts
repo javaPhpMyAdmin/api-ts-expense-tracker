@@ -42,6 +42,9 @@ export class AuthMiddleware {
 
       const user = await this.getUserUseCase.execute(emailDto!);
 
+      if (!user)
+        return res.status(401).json(CustomError.unauthorized("Invalid user"));
+
       //AQUI PODRIA AL OBTENER EL USER JUGAR CON ALGUNA PROPIEDAD PARA INVALIDAR SU TOKEN
 
       req.body.user = user;

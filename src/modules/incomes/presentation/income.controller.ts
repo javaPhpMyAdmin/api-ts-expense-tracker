@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
-import { AddIncome, GetAllIncomes, GetIncomeById } from '../aplication';
-import { AddIncomeDto } from '../domain/dtos/addIncome.dto';
-import { CustomError } from '../../../shared/domain/errors';
-import { Logger } from '../../../shared/domain/logger';
+import { Request, Response } from "express";
+import { AddIncome, GetAllIncomes, GetIncomeById } from "../aplication";
+import { AddIncomeDto } from "../domain/dtos/addIncome.dto";
+import { CustomError } from "../../../shared/domain/errors";
+import { Logger } from "../../../shared/domain/logger";
+import { ObjectId } from "mongodb";
 export class IncomeController {
   constructor(
     private readonly getAllIncomes: GetAllIncomes,
@@ -46,16 +47,18 @@ export class IncomeController {
     const [error, addIncomeDto] = AddIncomeDto.create(req.body);
 
     if (error) return res.status(400).send({ error: error });
-
+    //UNA VEZ USE EL MIDDLEWARE
+    //req.body.user.id
+    const userId = req.params.id;
     this.addIncome
-      .registerIncome(addIncomeDto!)
-      .then((income) => res.status(204).json(income!))
+      .registerIncome(addIncomeDto!, userId)
+      .then((income) => res.status(201).json({ income: income! }))
       .catch((e) => this.handleError(e, res));
   }
 
   async deleteIncome(req: Request, res: Response) {
     try {
-      res.status(200).send({ message: 'income deleted successfully' });
+      res.status(200).send({ message: "income deleted successfully" });
     } catch (e) {
       this.handleError(e, res);
     }

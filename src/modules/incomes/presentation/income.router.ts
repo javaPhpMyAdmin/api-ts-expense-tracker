@@ -19,6 +19,6 @@ incomeRouter.get(
 );
 
 incomeRouter.post(
-  "/add-income",
+  "/add-income/:id",
   incomeController.registerIncome.bind(incomeController)
 );

@@ -1,14 +1,24 @@
-import { AddIncomeDto } from '../../../domain/dtos';
-import { Income } from '../../../domain/entities';
-import { IncomeDataSource } from '../../../domain/datasources';
-import { IncomeModel } from '../../../../../data/mongodb/models';
-import { CustomError } from '../../../../../shared/domain/errors';
-import { IncomeMapper } from '../../mappers';
+import { AddIncomeDto } from "../../../domain/dtos";
+import { Income } from "../../../domain/entities";
+import { IncomeDataSource } from "../../../domain/datasources";
+import { IncomeModel, UserModel } from "../../../../../data/mongodb/models";
+import { CustomError } from "../../../../../shared/domain/errors";
+import { IncomeMapper } from "../../mappers";
+import { Error } from "mongoose";
+import { User, UserFromDb } from "modules/users/domain";
+import { ObjectId } from "mongodb";
 
 export class MongoDataSourceImpl implements IncomeDataSource {
-  async addIncome(incomeToAdd: AddIncomeDto): Promise<Income> {
+  async addIncome(incomeToAdd: AddIncomeDto, userId: string): Promise<Income> {
     const { title, description, amount, type, category, date } = incomeToAdd;
     try {
+      const userToUpdate = await UserModel.findOne({
+        _id: new ObjectId(userId),
+      });
+
+      if (!userToUpdate)
+        throw CustomError.badRequest("User not found with this id");
+
       const income = await IncomeModel.create({
         title,
         description,
@@ -16,14 +26,28 @@ export class MongoDataSourceImpl implements IncomeDataSource {
         type,
         category,
         date,
+        user: userId,
       });
 
-      await income.save();
+      if (!income) throw CustomError.badRequest("BAD ID");
+
+      const incomeSaved = await income.save();
+
+      const updatedUser = await UserModel.findByIdAndUpdate(userId, {
+        $push: { incomes: incomeSaved._id },
+        new: true,
+      });
+      console.log("USER UPDATED", updatedUser);
 
       return IncomeMapper.incomeEntityFromObject(income);
     } catch (error) {
+      console.log("ERROR SAVING AND UPDATING", error);
+
       if (error instanceof CustomError) {
         throw error;
+      }
+      if (error instanceof Error) {
+        throw CustomError.internalServer(error.message);
       }
       throw CustomError.internalServer();
     }
@@ -66,6 +90,6 @@ export class MongoDataSourceImpl implements IncomeDataSource {
     }
   }
   async deleteIncome(incomeId: string): Promise<Income> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }

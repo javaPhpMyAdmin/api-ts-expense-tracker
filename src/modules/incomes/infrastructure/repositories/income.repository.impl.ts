@@ -1,7 +1,7 @@
-import { CustomError } from '../../../../shared/domain';
-import { IncomeDataSource } from '../../domain/datasources';
-import { Income } from '../../domain/entities';
-import { IncomeRepository } from '../../domain/repositories';
+import { CustomError } from "../../../../shared/domain";
+import { IncomeDataSource } from "../../domain/datasources";
+import { Income } from "../../domain/entities";
+import { IncomeRepository } from "../../domain/repositories";
 
 export class IncomeRepositoryImpl implements IncomeRepository {
   constructor(private readonly incomeDataSource: IncomeDataSource) {}
@@ -29,11 +29,11 @@ export class IncomeRepositoryImpl implements IncomeRepository {
   }
 
   async deleteIncome(id: string): Promise<Income[]> {
-    throw new Error('no implemented yet');
+    throw new Error("no implemented yet");
   }
 
-  async addIncome(income: Income): Promise<Income> {
-    const incomeAdded = await this.incomeDataSource.addIncome(income);
+  async addIncome(income: Income, userId: string): Promise<Income> {
+    const incomeAdded = await this.incomeDataSource.addIncome(income, userId);
     return incomeAdded;
   }
 }
