@@ -6,7 +6,7 @@ export abstract class UserDataSource {
   abstract saveUser(userDto: UserDto): Promise<User | null>;
   abstract removeUser(emailDto: UserEmailDto): Promise<User | null>;
   abstract updateUser(userDto: UserDto): Promise<User | null>;
-  abstract getAllUsers(): Promise<User[] | []>;
+  abstract getAllUsers(): Promise<User[] | null>;
   abstract loginUser(userLogin: UserLoginDto): Promise<User | null>;
   abstract saveRefreshToken(
     email: string,

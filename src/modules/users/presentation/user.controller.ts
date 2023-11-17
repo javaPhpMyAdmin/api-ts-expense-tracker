@@ -1,6 +1,6 @@
-import { Response, Request } from "express";
-import { UserDto, UserLoginDto } from "../domain/dtos";
-import { CustomError, Logger } from "../../../shared/domain";
+import { Response, Request } from 'express';
+import { UserDto, UserLoginDto } from '../domain/dtos';
+import { CustomError, Logger } from '../../../shared/domain';
 import {
   DeleteUser,
   GetAllUsers,
@@ -8,7 +8,7 @@ import {
   RegisterUser,
   UpdateUser,
   UserLogin,
-} from "../aplication/useCases";
+} from '../aplication/useCases';
 
 export class UserController {
   constructor(
@@ -61,7 +61,7 @@ export class UserController {
   logoutUser(req: Request, res: Response) {}
 
   getUserByEmail(req: Request, res: Response) {
-    return res.status(200).send({ user: "User Retrieved" });
+    return res.status(200).send({ user: 'User Retrieved' });
   }
 
   updateUser(req: Request, res: Response) {
@@ -78,12 +78,15 @@ export class UserController {
   }
 
   deleteUser(req: Request, res: Response) {
-    return res.status(200).send({ user: "User Deleted" });
+    return res.status(200).send({ user: 'User Deleted' });
   }
 
   getAllUsers(req: Request, res: Response) {
-    return res
-      .status(200)
-      .send({ users: "Users Retrieved", user: req.body.user });
+    this.getAllUsersUseCase
+      .getAllUser()
+      .then((users) => res.status(200).json(users))
+      .catch((e) => {
+        this.handleError(e, res);
+      });
   }
 }

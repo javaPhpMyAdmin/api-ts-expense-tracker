@@ -1,9 +1,9 @@
-import { Application } from "express";
-import { envs } from "../../infrastructure/envs";
-import { incomeRouter } from "../../../modules/incomes/presentation";
-import { UserRoutes } from "../../../modules/users/presentation";
-import { AuthMiddleware, AuthRoutes } from "../../../modules/auth/presentation";
-import { authMiddleware } from "../../../modules/auth/infrastructure/dependencies";
+import { Application } from 'express';
+import { envs } from '../../infrastructure/envs';
+import { incomeRouter } from '../../../modules/incomes/presentation';
+import { UserRoutes } from '../../../modules/users/presentation';
+import { AuthMiddleware, AuthRoutes } from '../../../modules/auth/presentation';
+import { authMiddleware } from '../../../modules/auth/infrastructure/dependencies';
 
 export class HTTPRouter {
   constructor() {}
@@ -21,13 +21,13 @@ export class HTTPRouter {
     //USER ROUTES
     app?.use(
       `${envs.API_VERSION_PREFIX}`,
-      [authMiddleware.validateToken],
+      // [authMiddleware.validateToken],
       UserRoutes.routes
     );
 
     //NOT FOUND ROUTES
-    app?.use("/", (req, res) => {
-      res.status(200).send("IT WORKS");
+    app?.use('/', (req, res) => {
+      res.status(200).send('IT WORKS');
     });
   }
 }

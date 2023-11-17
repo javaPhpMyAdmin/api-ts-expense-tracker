@@ -1,15 +1,16 @@
-import { log } from "console";
-import { UserModel } from "../../../../../data/mongodb";
-import { CustomError } from "../../../../../shared/domain";
+import { log } from 'console';
+import { UserModel } from '../../../../../data/mongodb';
+import { CustomError } from '../../../../../shared/domain';
 import {
   User,
   UserDataSource,
   UserDto,
   UserEmailDto,
+  UserFromDb,
   UserLoginDto,
-} from "../../../domain";
-import { BcryptAdapter } from "../../../utils";
-import { UserMapper } from "../../mappers";
+} from '../../../domain';
+import { BcryptAdapter } from '../../../utils';
+import { UserMapper } from '../../mappers';
 
 export class MongoDataSourceImpl implements UserDataSource {
   async getUserByEmail(emailDto: UserEmailDto): Promise<User | null> {
@@ -53,19 +54,31 @@ export class MongoDataSourceImpl implements UserDataSource {
     }
   }
   removeUser(emailDto: UserEmailDto): Promise<User | null> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   updateUser(userDto: UserDto): Promise<User | null> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
-  getAllUsers(): Promise<User[] | []> {
-    throw new Error("Method not implemented.");
+  async getAllUsers(): Promise<User[] | null> {
+    try {
+      const users = await UserModel.find().populate('incomes');
+      console.log('USERS', users);
+      const usersMapped = users.map((user) =>
+        UserMapper.userEntityFromObject(user)
+      );
+      return usersMapped as User[] | null;
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
   }
 
   loginUser(userLogin: UserLoginDto): Promise<User | null> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   saveRefreshToken(email: string, accessToken: string): Promise<User | null> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 }
