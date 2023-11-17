@@ -6,7 +6,7 @@ export abstract class IncomeDataSource {
     incomeToAdd: AddIncomeDto,
     userId: string
   ): Promise<Income>;
-  abstract getAllIncomes(): Promise<Income[]>;
+  abstract getAllIncomes(userId: string): Promise<Income[]>;
   abstract getIncomeById(incomeId: string): Promise<Income | null>;
   abstract deleteIncome(incomeId: string): Promise<Income>;
 }

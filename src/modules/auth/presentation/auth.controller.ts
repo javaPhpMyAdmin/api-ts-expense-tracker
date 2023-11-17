@@ -31,6 +31,7 @@ export class AuthController {
         res.json({
           user,
           token: await this.authUtility.generateToken({
+            id: user?.getId,
             email: user?.getEmail,
             name: user?.getName,
           }),

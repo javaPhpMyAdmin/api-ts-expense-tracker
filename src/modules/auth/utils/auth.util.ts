@@ -1,5 +1,5 @@
+import { envs } from "../../../shared/infrastructure/envs";
 import { Request } from "express";
-import { User } from "../../users/domain";
 import jwt from "jsonwebtoken";
 
 export class AuthUtility {
@@ -7,12 +7,12 @@ export class AuthUtility {
 
   async generateToken(
     payload: Object,
-    duration: string = "15"
+    duration: string = envs.TOKEN_EXPIRATES_IN
   ): Promise<string | null> {
     return new Promise((resolve) => {
       jwt.sign(
         payload,
-        "api_jwt_private_key",
+        envs.TOKEN_SECRET_KEY,
         { expiresIn: duration },
         (error, token) => {
           if (error) return resolve(null);
@@ -28,7 +28,7 @@ export class AuthUtility {
 
   verifyAccessToken<T>(token: string): Promise<T | null> {
     return new Promise((resolve) => {
-      jwt.verify(token, "api_jwt_private_key", (error, decoded) => {
+      jwt.verify(token, envs.TOKEN_SECRET_KEY, (error, decoded) => {
         if (error) return resolve(null);
         resolve(decoded as T);
       });

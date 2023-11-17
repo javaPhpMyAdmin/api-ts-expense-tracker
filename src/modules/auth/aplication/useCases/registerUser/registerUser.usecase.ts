@@ -22,11 +22,6 @@ export class RegisterUserUseCase {
       const [error, email] = UserEmailDto.create(registerUserDto.emailDto);
       if (error) throw CustomError.badRequest(error);
 
-      //CHECK IF USER IS NOT REGISTERED
-      const existUser = await this.userRepository.getUserByEmail(email!);
-      if (existUser) throw CustomError.badRequest("User already exist");
-
-      //IF NOT REGISTERED THEN SAVE THE NEW USER
       const user = await this.userRepository.saveUser(registerUserDto);
       if (!user) {
         const error = new Error("Something went wrong trying to register user");
@@ -34,7 +29,8 @@ export class RegisterUserUseCase {
       }
 
       this.logger.info(`${useCase} - USER REGISTERED SUCCESSFULLY`);
-
+      /*TODO:
+      HERE IS WHERE I NEED TO CREATE THE TOKEN FOR THIS USER AND RETURN IT WITH THE USER OR MAYBE IN THE LOGIN FUNCTION IS A BETTER OPTION*/
       return user;
     } catch (error) {
       this.logger.error(`${useCase} - ERROR REGISTERING USER, ${error}`);

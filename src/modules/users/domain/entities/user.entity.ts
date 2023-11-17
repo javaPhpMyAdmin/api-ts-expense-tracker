@@ -1,5 +1,6 @@
 export class User {
   constructor(
+    private readonly id: string,
     private readonly email: string,
     private readonly password: string | undefined,
     private readonly name: string,
@@ -7,7 +8,9 @@ export class User {
     private readonly phone: number,
     private readonly address: string
   ) {}
-
+  public get getId(): string {
+    return this.id;
+  }
   public get getEmail(): string {
     return this.email;
   }

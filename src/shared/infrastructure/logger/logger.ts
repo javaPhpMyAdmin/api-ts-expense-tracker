@@ -1,22 +1,22 @@
-import { Logger, Message } from '../../domain/logger/logger';
-import pino from 'pino';
+import { Logger, Message } from "../../domain/logger/logger";
+import pino from "pino";
 
-const logger = pino({
+const pinoLogger = pino({
   transport: {
-    target: 'pino-pretty',
+    target: "pino-pretty",
     options: {
       colorize: true,
-      translateTime: 'SYS:standard',
-      levelPrefix: '🚀',
+      translateTime: "SYS:standard",
+      levelPrefix: "🚀",
     },
   },
 });
 export class ConsoleLogger implements Logger {
   info(message: Message): void {
-    logger.info(message);
+    pinoLogger.info(message);
   }
 
   error(message: Message): void {
-    logger.error(message);
+    pinoLogger.error(message);
   }
 }

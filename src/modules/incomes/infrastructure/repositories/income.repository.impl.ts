@@ -18,9 +18,9 @@ export class IncomeRepositoryImpl implements IncomeRepository {
     }
   }
 
-  async getAllIncomes(): Promise<Income[] | []> {
+  async getAllIncomes(userId: string): Promise<Income[] | []> {
     try {
-      const incomes = await this.incomeDataSource.getAllIncomes();
+      const incomes = await this.incomeDataSource.getAllIncomes(userId);
       if (!incomes) return [];
       return incomes;
     } catch (error) {

@@ -7,18 +7,26 @@ export const incomeRouter = Router();
 incomeRouter.use((req: Request, res: Response, next: NextFunction) =>
   loggerMiddleware.logRequest(req, res, next)
 );
-
 incomeRouter.get(
-  "/get-incomes",
-  incomeController.getIncomes.bind(incomeController)
-);
-
-incomeRouter.get(
-  "/get-incomes/:id",
+  "/get-incomes/:incomeId",
   incomeController.getIncomesById.bind(incomeController)
+);
+incomeRouter.get(
+  "/get-incomes-by-user-id/:userId",
+  incomeController.getIncomesForUserId.bind(incomeController)
 );
 
 incomeRouter.post(
-  "/add-income/:id",
+  "/add-income/:userId",
   incomeController.registerIncome.bind(incomeController)
 );
+
+incomeRouter.delete(
+  "/delete-income/:incomeId",
+  incomeController.deleteIncome.bind(incomeController)
+);
+
+// incomeRouter.put(
+//   "/update-income/:incomeId",
+//   incomeController.updateIncome.bind(incomeController)
+// );

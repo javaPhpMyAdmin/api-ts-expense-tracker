@@ -3,7 +3,6 @@ import { AddIncome, GetAllIncomes, GetIncomeById } from "../aplication";
 import { AddIncomeDto } from "../domain/dtos/addIncome.dto";
 import { CustomError } from "../../../shared/domain/errors";
 import { Logger } from "../../../shared/domain/logger";
-import { ObjectId } from "mongodb";
 export class IncomeController {
   constructor(
     private readonly getAllIncomes: GetAllIncomes,
@@ -25,9 +24,12 @@ export class IncomeController {
     res.status(500).json(CustomError.internalServer());
   };
 
-  getIncomes = (req: Request, res: Response) => {
+  getIncomesForUserId = (req: Request, res: Response) => {
+    //UNA VEZ USE EL MIDDLEWARE
+    //req.body.user.id
+    const userId = req.params.userId;
     this.getAllIncomes
-      .getAllIncomes()
+      .getAllIncomes(userId)
       .then((incomes) => {
         res.status(200).send({ incomes: incomes });
       })
@@ -35,10 +37,10 @@ export class IncomeController {
   };
 
   getIncomesById(req: Request, res: Response) {
-    const { id } = req.params;
+    const { incomeId } = req.params;
 
     this.getIncomeById
-      .getIncomeById(id)
+      .getIncomeById(incomeId)
       .then((income) => res.status(200).send({ income: income }))
       .catch((e) => this.handleError(e, res));
   }
@@ -49,7 +51,9 @@ export class IncomeController {
     if (error) return res.status(400).send({ error: error });
     //UNA VEZ USE EL MIDDLEWARE
     //req.body.user.id
-    const userId = req.params.id;
+    const userId = req.params.userId;
+    console.log("USER ID", userId);
+
     this.addIncome
       .registerIncome(addIncomeDto!, userId)
       .then((income) => res.status(201).json({ income: income! }))
@@ -57,8 +61,9 @@ export class IncomeController {
   }
 
   async deleteIncome(req: Request, res: Response) {
+    const { id } = req.params;
     try {
-      res.status(200).send({ message: "income deleted successfully" });
+      res.status(200).send({ message: "Income deleted successfully" });
     } catch (e) {
       this.handleError(e, res);
     }
