@@ -1,10 +1,10 @@
-import { LoginUserDto, User, UserRepository } from 'modules/users/domain';
-import { RegisterUserUseCase } from '..';
-import { CustomError, Logger } from '../../../../../shared/domain';
-import { AuthUtility } from '../../../utils';
-import { AuthRepository } from '../../..';
+import { LoginUserDto, User, UserRepository } from "modules/users/domain";
+import { RegisterUserUseCase } from "..";
+import { CustomError, Logger } from "../../../../../shared/domain";
+import { AuthUtility } from "../../../utils";
+import { AuthRepository } from "../../..";
 
-const useCase = '[Use case - LoginUser]';
+const useCase = "[Use case - LoginUser]";
 export class LoginUserUseCase {
   constructor(
     private readonly authUtility: AuthUtility,
@@ -31,9 +31,9 @@ export class LoginUserUseCase {
 
       if (userAuthenticated) {
         const accessToken = await this.authUtility.generateToken({
-          userId: userAuthenticated.getId,
-          userEmail: userAuthenticated.getEmail,
-          userName: userAuthenticated.getName,
+          userId: userAuthenticated?.getId,
+          userEmail: userAuthenticated?.getEmail,
+          userName: userAuthenticated?.getName,
         });
 
         const refreshToken = await this.authUtility.generateRefreshToken({
@@ -51,10 +51,9 @@ export class LoginUserUseCase {
         //   userAuthenticated.getEmail,
         //   accessToken!
         // );
-
+        this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
         return { userAuthenticated, accessToken, refreshToken: null };
       }
-      return undefined;
     } catch (error) {
       if (error instanceof CustomError) {
         this.logger.error(`${useCase} - ${error.message}`);

@@ -1,4 +1,4 @@
-import { UserEmailDto } from '../../../../modules/users/domain';
+import { UserEmailDto } from "../../../../modules/users/domain";
 
 export class RegisterUserDto {
   private constructor(
@@ -13,19 +13,19 @@ export class RegisterUserDto {
   static create(object: { [key: string]: any }): [string?, RegisterUserDto?] {
     const { email, password, name, lastname, phone, address } = object;
 
-    if (!name) return ['Missing name registerUserDto'];
-    if (!email) return ['Missing email'];
-    if (!password) return ['Missing password'];
-    if (!phone) return ['Missing phone'];
-    if (!address) return ['Missing address'];
+    if (!name) return ["Missing name registerUserDto"];
+    if (!email) return ["Missing email"];
+    if (!password) return ["Missing password"];
+    if (!phone) return ["Missing phone"];
+    if (!address) return ["Missing address"];
 
     //check valid email
-    const [error, emailDto] = UserEmailDto.create(email);
+    const [error, emailDto] = UserEmailDto.execute(email)!;
     if (error) return [`${error}`];
 
     //check length of password
-    if (password.length < 5) return ['Invalid password, too short'];
-    if (password.length > 15) return ['Invalid password, too long'];
+    if (password.length < 5) return ["Invalid password, too short"];
+    if (password.length > 15) return ["Invalid password, too long"];
 
     return [
       undefined,

@@ -1,12 +1,12 @@
-import { UserFromDb } from '../../../../modules/users/domain/dtos';
-import { CustomError } from '../../../../shared/domain';
-import { User } from '../../domain';
+import { UserFromDb } from "../../../../modules/users/domain/dtos";
+import { CustomError } from "../../../../shared/domain";
+import { User } from "../../domain";
 
 export class UserMapper {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static userEntityFromObject(object: { [key: string]: any }): User | null {
     if (!object.email || !object._id)
-      throw CustomError.badRequest('Missing email or id for user');
+      throw CustomError.badRequest("Missing email or id for user");
 
     const {
       email: emailFromDb,

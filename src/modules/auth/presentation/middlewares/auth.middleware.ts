@@ -1,22 +1,23 @@
 import { CustomError } from "../../../../shared/domain";
 import { NextFunction, Request, Response } from "express";
 import {
-  ValidateToken,
+  ValidateTokenUseCase,
   GetUserByEmail,
+  ValidateTokenProps,
 } from "../../../../modules/auth/aplication/useCases";
 import { AuthUtility } from "../../../../modules/auth/utils";
 import { UserEmailDto } from "../../../../modules/users/domain";
-
+const authUtil = new AuthUtility();
+// const validateTokenUseCase = new ValidateTokenUseCase();
 export class AuthMiddleware {
   constructor(
-    private readonly authUseCase: ValidateToken,
-    private readonly authUtility: AuthUtility,
+    private readonly validateTokenUse: ValidateTokenUseCase,
+    private readonly authUtility: AuthUtility | undefined,
     private readonly getUserUseCase: GetUserByEmail
   ) {}
 
   async validateToken(req: Request, res: Response, next: NextFunction) {
-    const [errorHeader, errorToken, accessToken] =
-      this.authUtility.validateHeaders(req);
+    const [errorHeader, errorToken, token] = authUtil.validateHeaders(req);
 
     if (errorToken)
       return res
@@ -29,14 +30,17 @@ export class AuthMiddleware {
         .json(CustomError.unauthorized("Invalid Bearer token provided"));
 
     try {
-      const payload = await this.authUseCase.verify(accessToken!);
+      console.log("BEFORE AUTH CASE VERIFY", token);
+
+      const payload = await this.validateTokenUse.verify(token!);
 
       if (!payload)
         return res
           .status(401)
           .json(CustomError.unauthorized("Invalid token provided"));
 
-      const [error, emailDto] = UserEmailDto.create(payload.email);
+      console.log("PAYLOAD", payload);
+      const [error, emailDto] = UserEmailDto.execute(payload?.email)!;
 
       if (error) return res.status(400).json(CustomError.badRequest(error));
 
@@ -51,6 +55,9 @@ export class AuthMiddleware {
 
       next();
     } catch (error) {
+      console.log("ERROR VALIDATE TOKEN", error);
+
+      if (error instanceof CustomError) throw error;
       throw CustomError.internalServer();
     }
   }

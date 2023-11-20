@@ -1,17 +1,17 @@
-import { AuthUtility } from '../../../modules/auth/utils';
-import { ValidateToken } from '../aplication/useCases/validateToken';
-import { AuthMiddleware } from '../presentation/middlewares';
-import { GetUserByEmail } from '../aplication/useCases/getUser';
-import { userRepository } from '../../../modules/users/infrastructure/dependencies';
-import { AuthController } from '../presentation';
+import { AuthUtility } from "../../../modules/auth/utils";
+import { ValidateTokenUseCase } from "../aplication/useCases/validateToken";
+import { AuthMiddleware } from "../presentation/middlewares";
+import { GetUserByEmail } from "../aplication/useCases/getUser";
+import { userRepository } from "../../../modules/users/infrastructure/dependencies";
+import { AuthController } from "../presentation";
 import {
   AuthRepositoryImpl,
   LoginUserUseCase,
   MockDataSourceImpl,
   MongoDataSourceImpl,
   RegisterUserUseCase,
-} from '..';
-import { ConsoleLogger } from '../../../shared/infrastructure';
+} from "..";
+import { ConsoleLogger } from "../../../shared/infrastructure";
 
 //UTILITY FOR AUTHENTICATION
 const authUtility = new AuthUtility();
@@ -29,19 +29,20 @@ const mongoDatasource = new MongoDataSourceImpl();
 const authRepository = new AuthRepositoryImpl(mongoDatasource);
 
 //VALIDATE TOKEN USE CASE
-const validateToken = new ValidateToken();
+const validateTokenUseCase = new ValidateTokenUseCase(authUtility);
 
 //GET USER USE CASE
 const getUser = new GetUserByEmail(userRepository);
 
 //MIDDLEWARE FOR AUTHENTICATION
-export const authMiddleware = new AuthMiddleware(
-  validateToken,
-  authUtility,
-  getUser
-);
+export default new AuthMiddleware(validateTokenUseCase, authUtility, getUser);
+
 //REGISTER USER USE CASE
-const registerUser = new RegisterUserUseCase(authRepository, logger);
+const registerUser = new RegisterUserUseCase(
+  authUtility,
+  authRepository,
+  logger
+);
 
 //LOGIN USER USE CASE
 const loginUser = new LoginUserUseCase(authUtility, authRepository, logger);

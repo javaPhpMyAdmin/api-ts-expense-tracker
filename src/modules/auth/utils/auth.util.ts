@@ -1,6 +1,6 @@
-import { envs } from '../../../shared/infrastructure/envs';
-import { Request } from 'express';
-import jwt from 'jsonwebtoken';
+import { envs } from "../../../shared/infrastructure/envs";
+import { Request } from "express";
+import jwt from "jsonwebtoken";
 
 export class AuthUtility {
   constructor() {}
@@ -16,6 +16,7 @@ export class AuthUtility {
         { expiresIn: duration },
         (error, token) => {
           if (error) return resolve(null);
+
           resolve(token!);
         }
       );
@@ -41,13 +42,13 @@ export class AuthUtility {
   }
 
   validateHeaders(req: Request): [string?, string?, string?] {
-    const authorization = req.header('Authorization');
-    if (!authorization) return ['No token provided'];
+    const authorization = req.header("Authorization");
+    if (!authorization) return ["No token provided"];
 
-    if (!authorization.startsWith('Bearer '))
-      return [undefined, 'Invalid Bearer token provided', undefined];
+    if (!authorization.startsWith("Bearer "))
+      return [undefined, "Invalid Bearer token provided", undefined];
 
-    const token = authorization.split(' ').at(1) || '';
+    const token = authorization.split(" ").at(1) || "";
 
     return [undefined, undefined, token];
   }

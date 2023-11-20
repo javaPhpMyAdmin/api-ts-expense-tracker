@@ -1,15 +1,15 @@
-import { RegisterUserDto, LoginUserDto } from '../../..';
-import { UserModel } from '../../../../../data/mongodb';
-import { CustomError } from '../../../../../shared/domain';
-import { UserEmailDto, User } from '../../../../users/domain';
-import { UserMapper } from '../../../../users/infrastructure/mappers';
-import { BcryptAdapter } from '../../../../users/utils';
-import { AuthDatasource } from '../../../domain/datasources';
+import { RegisterUserDto, LoginUserDto } from "../../..";
+import { UserModel } from "../../../../../data/mongodb";
+import { CustomError } from "../../../../../shared/domain";
+import { UserEmailDto, User } from "../../../../users/domain";
+import { UserMapper } from "../../../../users/infrastructure/mappers";
+import { BcryptAdapter } from "../../../../users/utils";
+import { AuthDatasource } from "../../../domain/datasources";
 
 export class MongoDataSourceImpl implements AuthDatasource {
   constructor() {}
   async getUser(emailDto: UserEmailDto): Promise<User | null> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 
   async saveUser(registerUserDto: RegisterUserDto): Promise<User | null> {
@@ -18,7 +18,7 @@ export class MongoDataSourceImpl implements AuthDatasource {
     try {
       const existsUser = await UserModel.findOne({ email });
 
-      if (existsUser) throw CustomError.badRequest('Impossible to save user');
+      if (existsUser) throw CustomError.badRequest("Impossible to save user");
 
       //HASH THE PASSWORD
       const passwordHashed = BcryptAdapter.hash(password);
@@ -61,8 +61,6 @@ export class MongoDataSourceImpl implements AuthDatasource {
 
       const userForAuthenticate = UserMapper.userEntityFromObject(existsUser)!;
 
-      console.log('USER MONGO DATASOURCE', userForAuthenticate);
-
       return userForAuthenticate;
     } catch (error) {
       if (error instanceof CustomError) {
@@ -75,9 +73,9 @@ export class MongoDataSourceImpl implements AuthDatasource {
     userId: string,
     accessToken: string
   ): Promise<User | null> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
   async saveToken(accessToken: string, userId: string): Promise<User | null> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }

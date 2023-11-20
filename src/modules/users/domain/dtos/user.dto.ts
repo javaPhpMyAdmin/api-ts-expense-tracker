@@ -21,7 +21,7 @@ export class UserDto {
     if (!address) return ["Missing address"];
 
     //check valid email
-    const [error, emailDto] = UserEmailDto.create(email);
+    const [error, emailDto] = UserEmailDto.execute(email);
     if (error) return [`${error}`];
 
     //check length of password
