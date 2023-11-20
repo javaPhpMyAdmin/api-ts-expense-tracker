@@ -5,12 +5,6 @@ export class UserRoutes {
   static get routes(): Router {
     const userRouter = Router();
 
-    userRouter.post('/login', userController.loginUser.bind(userController));
-    userRouter.post(
-      '/register',
-      userController.registerUser.bind(userController)
-    );
-
     userRouter.get(
       '/get-users',
       userController.getAllUsers.bind(userController)
@@ -19,6 +13,16 @@ export class UserRoutes {
     userRouter.get(
       '/get-user/:id',
       userController.getUserByEmail.bind(userController)
+    );
+
+    userRouter.delete(
+      '/delete-user/:userId',
+      userController.deleteUser.bind(userController)
+    );
+
+    userRouter.put(
+      '/update-user/:userId',
+      userController.updateUser.bind(userController)
     );
 
     return userRouter;

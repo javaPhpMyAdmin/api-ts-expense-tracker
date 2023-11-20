@@ -4,7 +4,7 @@ import {
   UserEmailDto,
   UserRepository,
   User,
-  UserLoginDto,
+  LoginUserDto,
 } from '../../domain';
 import { CustomError } from '../../../../shared/domain';
 
@@ -23,19 +23,19 @@ export class UserRepositoryImpl implements UserRepository {
       throw CustomError.internalServer();
     }
   }
-  async saveUser(userDto: UserDto): Promise<User | null> {
-    try {
-      const user = await this.userDataSource.saveUser(userDto);
+  // async saveUser(userDto: UserDto): Promise<User | null> {
+  //   try {
+  //     const user = await this.userDataSource.saveUser(userDto);
 
-      if (!user) return null;
-      return user;
-    } catch (error) {
-      if (error instanceof CustomError) {
-        throw error;
-      }
-      throw CustomError.internalServer();
-    }
-  }
+  //     if (!user) return null;
+  //     return user;
+  //   } catch (error) {
+  //     if (error instanceof CustomError) {
+  //       throw error;
+  //     }
+  //     throw CustomError.internalServer();
+  //   }
+  // }
 
   async removeUser(emailDto: UserEmailDto): Promise<User | null> {
     try {
@@ -75,34 +75,34 @@ export class UserRepositoryImpl implements UserRepository {
       throw CustomError.internalServer();
     }
   }
-  async loginUser(userLoginDto: UserLoginDto): Promise<User | null> {
-    try {
-      const user = await this.userDataSource.loginUser(userLoginDto);
-      if (!user) return null;
-      return user;
-    } catch (error) {
-      if (error instanceof CustomError) {
-        throw error;
-      }
-      throw CustomError.internalServer();
-    }
-  }
-  async saveRefreshToken(
-    email: string,
-    accessToken: string
-  ): Promise<User | null> {
-    try {
-      const user = await this.userDataSource.saveRefreshToken(
-        email,
-        accessToken
-      );
-      if (!user) return null;
-      return user;
-    } catch (error) {
-      if (error instanceof CustomError) {
-        throw error;
-      }
-      throw CustomError.internalServer();
-    }
-  }
+  // async loginUser(userLoginDto: LoginUserDto): Promise<User | null> {
+  //   try {
+  //     const user = await this.userDataSource.loginUser(userLoginDto);
+  //     if (!user) return null;
+  //     return user;
+  //   } catch (error) {
+  //     if (error instanceof CustomError) {
+  //       throw error;
+  //     }
+  //     throw CustomError.internalServer();
+  //   }
+  // }
+  // async saveRefreshToken(
+  //   email: string,
+  //   accessToken: string
+  // ): Promise<User | null> {
+  //   try {
+  //     const user = await this.userDataSource.saveRefreshToken(
+  //       email,
+  //       accessToken
+  //     );
+  //     if (!user) return null;
+  //     return user;
+  //   } catch (error) {
+  //     if (error instanceof CustomError) {
+  //       throw error;
+  //     }
+  //     throw CustomError.internalServer();
+  //   }
+  // }
 }

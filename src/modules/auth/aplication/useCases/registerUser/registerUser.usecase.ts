@@ -2,15 +2,16 @@ import {
   User,
   UserEmailDto,
   UserRepository,
-} from "../../../../../modules/users/domain";
-import { CustomError } from "../../../../../shared/domain";
-import { Logger } from "../../../../../shared/domain/logger";
-import { RegisterUserDto } from "../../../../../modules/auth/domain/dtos";
+} from '../../../../../modules/users/domain';
+import { CustomError } from '../../../../../shared/domain';
+import { Logger } from '../../../../../shared/domain/logger';
+import { RegisterUserDto } from '../../../../../modules/auth/domain/dtos';
+import { AuthRepository } from '../../..';
 
-const useCase = "[Use case - RegisterUser]";
+const useCase = '[Use case - RegisterUser]';
 export class RegisterUserUseCase {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly authRepository: AuthRepository,
     private readonly logger: Logger
   ) {}
 
@@ -19,12 +20,12 @@ export class RegisterUserUseCase {
   ): Promise<User | undefined> {
     this.logger.info(`${useCase} - REGISTERING USER...`);
     try {
-      const [error, email] = UserEmailDto.create(registerUserDto.emailDto);
+      const [error, email] = UserEmailDto.create(registerUserDto.email);
       if (error) throw CustomError.badRequest(error);
 
-      const user = await this.userRepository.saveUser(registerUserDto);
+      const user = await this.authRepository.saveUser(registerUserDto);
       if (!user) {
-        const error = new Error("Something went wrong trying to register user");
+        const error = new Error('Something went wrong trying to register user');
         throw error;
       }
 

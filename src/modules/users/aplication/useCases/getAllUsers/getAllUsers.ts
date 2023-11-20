@@ -1,7 +1,7 @@
-import { CustomError, Logger } from "../../../../../shared/domain";
-import { User, UserRepository } from "../../../domain";
+import { CustomError, Logger } from '../../../../../shared/domain';
+import { User, UserRepository } from '../../../domain';
 
-const useCase = "[Use case - GetAllUsers]";
+const useCase = '[Use case - GetAllUsers]';
 
 export class GetAllUsers {
   constructor(
@@ -13,14 +13,15 @@ export class GetAllUsers {
     this.logger.info(`${useCase} - GETTING ALL USERS...`);
     try {
       const users = await this.userRepository.getAllUsers();
-      if (users.length <= 0) {
+      if (!users) {
         const error = new Error(
-          "Something went wrong trying to retrieving users"
+          'Something went wrong trying to retrieving users'
         );
         throw error;
       }
 
       this.logger.info(`${useCase} -  USERS RETRIEVED SUCCESSFULLY...`);
+
       return users;
     } catch (error) {
       this.logger.error(`${useCase} - ERROR REGISTERING USER, ${error}`);

@@ -1,12 +1,66 @@
-import { UserRepository } from "modules/users/domain";
+import { LoginUserDto, User, UserRepository } from 'modules/users/domain';
+import { RegisterUserUseCase } from '..';
+import { CustomError, Logger } from '../../../../../shared/domain';
+import { AuthUtility } from '../../../utils';
+import { AuthRepository } from '../../..';
 
-export class LoginUser {
-  constructor(private readonly userRepository?: UserRepository) {}
+const useCase = '[Use case - LoginUser]';
+export class LoginUserUseCase {
+  constructor(
+    private readonly authUtility: AuthUtility,
+    private readonly authRepository: AuthRepository,
+    private readonly logger: Logger
+  ) {}
 
-  async execute(
-    username: string,
-    password: string
-  ): Promise<{ accessToken: string; refreshToken?: string } | null> {
-    return null;
+  async loginUser(loginUserDto: LoginUserDto): Promise<
+    | {
+        userAuthenticated: User;
+        accessToken: string | null;
+        refreshToken: string | null;
+      }
+    | undefined
+  > {
+    this.logger.info(`${useCase} - AUTH LOGING USER...`);
+    try {
+      const userAuthenticated = await this.authRepository.loginUser(
+        loginUserDto
+      );
+
+      //IF USER SEND WRONG CREDENTIALS RETURN UNDEFINED
+      if (!userAuthenticated) return undefined;
+
+      if (userAuthenticated) {
+        const accessToken = await this.authUtility.generateToken({
+          userId: userAuthenticated.getId,
+          userEmail: userAuthenticated.getEmail,
+          userName: userAuthenticated.getName,
+        });
+
+        const refreshToken = await this.authUtility.generateRefreshToken({
+          userId: userAuthenticated.getId,
+          userEmail: userAuthenticated.getEmail,
+          userName: userAuthenticated.getName,
+        });
+
+        // await this.authRepository.saveToken(
+        //   userAuthenticated.getEmail,
+        //   accessToken!
+        // );
+
+        // await this.authRepository.saveRefreshToken(
+        //   userAuthenticated.getEmail,
+        //   accessToken!
+        // );
+
+        return { userAuthenticated, accessToken, refreshToken: null };
+      }
+      return undefined;
+    } catch (error) {
+      if (error instanceof CustomError) {
+        this.logger.error(`${useCase} - ${error.message}`);
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
   }
 }

@@ -1,15 +1,7 @@
-import { log } from "console";
-import { UserModel } from "../../../../../data/mongodb";
-import { CustomError } from "../../../../../shared/domain";
-import {
-  User,
-  UserDataSource,
-  UserDto,
-  UserEmailDto,
-  UserLoginDto,
-} from "../../../domain";
-import { BcryptAdapter } from "../../../utils";
-import { UserMapper } from "../../mappers";
+import { UserModel } from '../../../../../data/mongodb';
+import { CustomError } from '../../../../../shared/domain';
+import { User, UserDataSource, UserDto, UserEmailDto } from '../../../domain';
+import { UserMapper } from '../../mappers';
 
 export class MongoDataSourceImpl implements UserDataSource {
   async getUserByEmail(emailDto: UserEmailDto): Promise<User | null> {
@@ -26,39 +18,12 @@ export class MongoDataSourceImpl implements UserDataSource {
       throw CustomError.internalServer();
     }
   }
-  async saveUser(userDto: UserDto): Promise<User | null> {
-    const { emailDto, name, address, lastname, password, phone } = userDto;
-    try {
-      const existsUser = await UserModel.findOne({ emailDto });
-      if (existsUser) throw CustomError.badRequest("Impossible to save user");
-      //HASH THE PASSWORD
-      const passwordHashed = BcryptAdapter.hash(password);
-      const email = emailDto;
 
-      const user = new UserModel({
-        email,
-        passwordHashed,
-        name,
-        lastname,
-        phone,
-        address,
-      });
-
-      await user.save();
-
-      return UserMapper.userEntityFromObject(user);
-    } catch (error) {
-      if (error instanceof CustomError) {
-        throw error;
-      }
-      throw CustomError.internalServer();
-    }
+  async removeUser(emailDto: UserEmailDto): Promise<User | null> {
+    throw new Error('Method not implemented.');
   }
-  removeUser(emailDto: UserEmailDto): Promise<User | null> {
-    throw new Error("Method not implemented.");
-  }
-  updateUser(userDto: UserDto): Promise<User | null> {
-    throw new Error("Method not implemented.");
+  async updateUser(userDto: UserDto): Promise<User | null> {
+    throw new Error('Method not implemented.');
   }
   async getAllUsers(): Promise<User[] | null> {
     try {
@@ -73,12 +38,5 @@ export class MongoDataSourceImpl implements UserDataSource {
       }
       throw CustomError.internalServer();
     }
-  }
-
-  loginUser(userLogin: UserLoginDto): Promise<User | null> {
-    throw new Error("Method not implemented.");
-  }
-  saveRefreshToken(email: string, accessToken: string): Promise<User | null> {
-    throw new Error("Method not implemented.");
   }
 }

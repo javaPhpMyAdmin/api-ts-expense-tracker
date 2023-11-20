@@ -1,39 +1,39 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 const userSchema = new Schema({
   email: {
     type: String,
     unique: true,
-    required: [true, "Email is required"],
+    required: [true, 'Email is required'],
   },
   passwordHashed: {
     type: String,
-    required: [true, "Password is required"],
+    required: [true, 'Password is required'],
   },
   name: {
     type: String,
-    required: [true, "Name is required"],
+    required: [true, 'Name is required'],
   },
   lastname: {
     type: String,
-    required: [true, "Lastname is required"],
+    required: [true, 'Lastname is required'],
   },
   phone: {
     type: Number,
-    required: [true, "Phone is required"],
+    required: [true, 'Phone is required'],
   },
   address: {
     type: String,
-    required: [true, "Address is required"],
+    required: [true, 'Address is required'],
   },
 });
 
-userSchema.set("toJSON", {
+userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject.__v;
-    // delete returnedObject.passwordHashed;
+    delete returnedObject.passwordHashed;
   },
 });
 
-export const UserModel = mongoose.model("User", userSchema);
+export const UserModel = mongoose.model('User', userSchema);

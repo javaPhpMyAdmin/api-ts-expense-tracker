@@ -1,15 +1,13 @@
-import { ConsoleLogger } from "../../../shared/infrastructure";
+import { ConsoleLogger } from '../../../shared/infrastructure';
 import {
-  RegisterUser,
-  UserLogin,
   GetAllUsers,
   GetUserByEmail,
   UpdateUser,
   DeleteUser,
-} from "../aplication";
-import { UserController } from "../presentation";
-import { MockDataSourceImpl, MongoDataSourceImpl } from "./datasources";
-import { UserRepositoryImpl } from "./repositories";
+} from '../aplication';
+import { UserController } from '../presentation';
+import { MockDataSourceImpl, MongoDataSourceImpl } from './datasources';
+import { UserRepositoryImpl } from './repositories';
 
 //LOGGER INSTANCE
 const logger = new ConsoleLogger();
@@ -21,13 +19,6 @@ const mongoDataSource = new MongoDataSourceImpl();
 
 //USER REPOSITORY --- HERE WE CAN SWITCH AND INJECT DIFERENTS DATASOURCES
 export const userRepository = new UserRepositoryImpl(mongoDataSource);
-
-//USE CASES INSTANCES//
-//REGISTER USER USECASE
-const registerUserUseCase = new RegisterUser(userRepository, logger);
-
-//LOGIN USER USECASE
-const loginUserUseCase = new UserLogin(userRepository, logger);
 
 //GET ALL USERS USECASE
 const getAllUsersUseCase = new GetAllUsers(userRepository, logger);
@@ -43,8 +34,8 @@ const deleteUserUseCase = new DeleteUser(userRepository, logger);
 
 //USER CONTROLLER INSTANCE
 export const userController = new UserController(
-  registerUserUseCase,
-  loginUserUseCase,
+  undefined,
+  undefined,
   getAllUsersUseCase,
   getUserByEmailUseCase,
   updateUserUseCase,

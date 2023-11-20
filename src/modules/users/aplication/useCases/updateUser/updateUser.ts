@@ -9,7 +9,10 @@ export class UpdateUser {
     private readonly logger: Logger
   ) {}
 
-  async updateUser(userDto: UserDto): Promise<User | undefined> {
+  async updateUser(
+    userDto: UserDto,
+    userId?: string
+  ): Promise<User | undefined> {
     this.logger.info(`${useCase} - UPDATING USER...`);
     return undefined;
   }

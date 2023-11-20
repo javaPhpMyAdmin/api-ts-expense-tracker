@@ -3,4 +3,6 @@ import { UserRepository } from '../../../domain';
 
 export class DeleteUser {
   constructor(private userRepository: UserRepository, private logger: Logger) {}
+
+  async deleteUser(userId: string) {}
 }

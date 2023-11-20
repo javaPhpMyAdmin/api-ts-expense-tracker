@@ -1,4 +1,4 @@
-import { UserEmailDto } from ".";
+import { UserEmailDto } from '.';
 
 export class UserFromDb {
   private constructor(
@@ -10,17 +10,30 @@ export class UserFromDb {
   ) {}
 
   static create(object: { [key: string]: any }): [string?, UserFromDb?] {
-    const { emailOb, nameObj, lastnameObj, phoneObj, addressObj } = object;
+    const {
+      emailFromDb,
+      nameFromDb,
+      passwordFromDb,
+      lastnameFromDb,
+      phoneFromDb,
+      addressFromDb,
+    } = object;
 
-    if (!nameObj) return ["Missing name"];
-    if (!emailOb) return ["Missing email"];
-    if (!phoneObj) return ["Missing phone"];
-    if (!addressObj) return ["Missing address"];
-    if (!lastnameObj) return ["Missing lastname"];
+    if (!nameFromDb) return ['Missing name'];
+    if (!emailFromDb) return ['Missing email'];
+    if (!phoneFromDb) return ['Missing phone'];
+    if (!addressFromDb) return ['Missing address'];
+    if (!lastnameFromDb) return ['Missing lastname'];
 
     return [
       undefined,
-      new UserFromDb(emailOb, nameObj, lastnameObj, phoneObj, addressObj),
+      new UserFromDb(
+        emailFromDb,
+        nameFromDb,
+        lastnameFromDb,
+        phoneFromDb,
+        addressFromDb
+      ),
     ];
   }
 }

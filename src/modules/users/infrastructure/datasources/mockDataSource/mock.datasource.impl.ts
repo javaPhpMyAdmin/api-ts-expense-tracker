@@ -3,7 +3,7 @@ import {
   UserDataSource,
   UserDto,
   UserEmailDto,
-  UserLoginDto,
+  LoginUserDto,
 } from '../../../domain';
 
 export class MockDataSourceImpl implements UserDataSource {
@@ -25,7 +25,7 @@ export class MockDataSourceImpl implements UserDataSource {
   getAllUsers(): Promise<User[] | []> {
     throw new Error('Method not implemented.');
   }
-  loginUser(userLogin: UserLoginDto): Promise<User | null> {
+  loginUser(userLogin: LoginUserDto): Promise<User | null> {
     throw new Error('Method not implemented.');
   }
   saveRefreshToken(email: string, accessToken: string): Promise<User | null> {

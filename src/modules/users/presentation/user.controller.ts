@@ -1,19 +1,18 @@
 import { Response, Request } from 'express';
-import { UserDto, UserLoginDto } from '../domain/dtos';
+import { UserDto, LoginUserDto } from '../domain/dtos';
 import { CustomError, Logger } from '../../../shared/domain';
 import {
   DeleteUser,
   GetAllUsers,
   GetUserByEmail,
-  RegisterUser,
   UpdateUser,
-  UserLogin,
 } from '../aplication/useCases';
+import { RegisterUserUseCase, LoginUserUseCase } from '../../auth';
 
 export class UserController {
   constructor(
-    private readonly registerUserUseCase: RegisterUser,
-    private readonly loginUserUseCase: UserLogin,
+    private readonly registerUserUseCase: RegisterUserUseCase | undefined,
+    private readonly loginUserUseCase: LoginUserUseCase | undefined,
     private readonly getAllUsersUseCase: GetAllUsers,
     private readonly getUserByEmailUseCase: GetUserByEmail,
     private readonly updateUserUseCase: UpdateUser,
@@ -34,30 +33,6 @@ export class UserController {
     }
   };
 
-  registerUser(req: Request, res: Response) {
-    const [error, userDto] = UserDto.create(req.body);
-
-    if (error) return res.status(400).send({ error: error });
-
-    this.registerUserUseCase
-      .registerUser(userDto!)
-      .then((user) => res.status(204).json(user!))
-      .catch((e) => this.handleError(e, res));
-  }
-
-  loginUser(req: Request, res: Response) {
-    const [error, userLoginDto] = UserLoginDto.create(req.body);
-
-    if (error) res.status(400).send({ error: error });
-
-    this.loginUserUseCase
-      .loginUser(userLoginDto!)
-      .then((user) => res.status(200).json(user))
-      .catch((e) => {
-        this.handleError(e, res);
-      });
-  }
-
   logoutUser(req: Request, res: Response) {}
 
   getUserByEmail(req: Request, res: Response) {
@@ -69,8 +44,9 @@ export class UserController {
 
     if (error) res.status(400).send({ error: error });
 
+    const userId = '1'; //AFTER USER A MIDDLEWARE WE COULD GET USER ID FROM req.user.userId
     this.updateUserUseCase
-      .updateUser(userDto!)
+      .updateUser(userDto!, userId)
       .then((user) => res.status(200).json(user))
       .catch((e) => {
         this.handleError(e, res);
@@ -78,7 +54,14 @@ export class UserController {
   }
 
   deleteUser(req: Request, res: Response) {
-    return res.status(200).send({ user: 'User Deleted' });
+    const userId = '1'; //AFTER USER A MIDDLEWARE WE COULD GET USER ID FROM req.user.userId
+
+    this.deleteUserUseCase
+      .deleteUser(userId)
+      .then((user) => res.status(200).json(user))
+      .catch((e) => {
+        this.handleError(e, res);
+      });
   }
 
   getAllUsers(req: Request, res: Response) {

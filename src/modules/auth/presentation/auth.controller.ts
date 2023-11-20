@@ -1,11 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import { RegisterUserDto } from "../domain/dtos";
-import { RegisterUserUseCase } from "../aplication/useCases";
-import { CustomError } from "../../../shared/domain";
-import { AuthUtility } from "..";
+import { NextFunction, Request, Response } from 'express';
+import { LoginUserDto, RegisterUserDto } from '../domain/dtos';
+import { LoginUserUseCase, RegisterUserUseCase } from '../aplication/useCases';
+import { CustomError } from '../../../shared/domain';
+import { AuthUtility } from '..';
 
 export class AuthController {
   constructor(
+    private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly authUtility: AuthUtility
   ) {}
@@ -14,7 +15,7 @@ export class AuthController {
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({
         message: error.message,
-        handledError: "Auth Controller",
+        handledError: 'Auth Controller',
       });
     } else {
       res.status(500).json(CustomError.internalServer());
@@ -41,6 +42,24 @@ export class AuthController {
   }
 
   loginUser(req: Request, res: Response, next: NextFunction) {
-    res.status(200).send("LOGIN USER");
+    const [error, loginUserDto] = LoginUserDto.create(req.body);
+
+    if (error) return res.status(400).send({ error });
+
+    this.loginUserUseCase
+      .loginUser(loginUserDto!)
+      .then((response) => {
+        if (!response?.userAuthenticated)
+          return res.status(403).json({ error: 'INVALID CREDENTIALS' });
+
+        res
+          .status(200)
+          .send({
+            user: response?.userAuthenticated,
+            token: response.accessToken,
+            refreshToken: response?.refreshToken,
+          });
+      })
+      .catch((e) => this.handleError(e, res));
   }
 }
