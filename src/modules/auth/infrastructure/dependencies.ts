@@ -35,7 +35,11 @@ const validateTokenUseCase = new ValidateTokenUseCase(authUtility);
 const getUser = new GetUserByEmail(userRepository);
 
 //MIDDLEWARE FOR AUTHENTICATION
-export default new AuthMiddleware(validateTokenUseCase, authUtility, getUser);
+export const authMiddleware = new AuthMiddleware(
+  validateTokenUseCase,
+  authUtility,
+  getUser
+);
 
 //REGISTER USER USE CASE
 const registerUser = new RegisterUserUseCase(
@@ -48,8 +52,4 @@ const registerUser = new RegisterUserUseCase(
 const loginUser = new LoginUserUseCase(authUtility, authRepository, logger);
 
 //AUTH CONTROLLER INSTANCE
-export const authController = new AuthController(
-  loginUser,
-  registerUser,
-  authUtility
-);
+export const authController = new AuthController(loginUser, registerUser);

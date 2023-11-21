@@ -1,13 +1,13 @@
-import { ConsoleLogger } from '../../../shared/infrastructure';
+import { ConsoleLogger } from "../../../shared/infrastructure";
 import {
   GetAllUsers,
   GetUserByEmail,
   UpdateUser,
   DeleteUser,
-} from '../aplication';
-import { UserController } from '../presentation';
-import { MockDataSourceImpl, MongoDataSourceImpl } from './datasources';
-import { UserRepositoryImpl } from './repositories';
+} from "../aplication";
+import { UserController } from "../presentation";
+import { MockDataSourceImpl, MongoDataSourceImpl } from "./datasources";
+import { UserRepositoryImpl } from "./repositories";
 
 //LOGGER INSTANCE
 const logger = new ConsoleLogger();
@@ -34,8 +34,6 @@ const deleteUserUseCase = new DeleteUser(userRepository, logger);
 
 //USER CONTROLLER INSTANCE
 export const userController = new UserController(
-  undefined,
-  undefined,
   getAllUsersUseCase,
   getUserByEmailUseCase,
   updateUserUseCase,

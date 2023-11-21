@@ -2,14 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { LoginUserDto, RegisterUserDto } from "../domain/dtos";
 import { LoginUserUseCase, RegisterUserUseCase } from "../aplication/useCases";
 import { CustomError } from "../../../shared/domain";
-import { AuthUtility } from "..";
-import { UserDto } from "modules/users/domain";
 
 export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,
-    private readonly registerUserUseCase: RegisterUserUseCase,
-    private readonly authUtility: AuthUtility
+    private readonly registerUserUseCase: RegisterUserUseCase
   ) {}
 
   private handleError = (error: unknown, res: Response) => {

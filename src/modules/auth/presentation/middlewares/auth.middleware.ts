@@ -7,47 +7,42 @@ import {
 } from "../../../../modules/auth/aplication/useCases";
 import { AuthUtility } from "../../../../modules/auth/utils";
 import { UserEmailDto } from "../../../../modules/users/domain";
-const authUtil = new AuthUtility();
-// const validateTokenUseCase = new ValidateTokenUseCase();
+
 export class AuthMiddleware {
   constructor(
-    private readonly validateTokenUse: ValidateTokenUseCase,
+    private readonly validateTokenUseCase: ValidateTokenUseCase,
     private readonly authUtility: AuthUtility | undefined,
-    private readonly getUserUseCase: GetUserByEmail
+    private readonly getUser: GetUserByEmail
   ) {}
 
-  async validateToken(req: Request, res: Response, next: NextFunction) {
-    const [errorHeader, errorToken, token] = authUtil.validateHeaders(req);
+  validateToken = async (req: Request, res: Response, next: NextFunction) => {
+    const [errorHeader, errorToken, token] =
+      this.authUtility?.validateHeaders(req)!;
 
     if (errorToken)
-      return res
-        .status(401)
-        .json(CustomError.unauthorized("Missing access token"));
+      return res.status(401).json(CustomError.unauthorized(errorToken));
 
     if (errorHeader)
-      return res
-        .status(401)
-        .json(CustomError.unauthorized("Invalid Bearer token provided"));
+      return res.status(401).json(CustomError.unauthorized(errorHeader));
 
     try {
-      console.log("BEFORE AUTH CASE VERIFY", token);
-
-      const payload = await this.validateTokenUse.verify(token!);
+      const payload = await this.validateTokenUseCase.verify(token!);
 
       if (!payload)
         return res
           .status(401)
           .json(CustomError.unauthorized("Invalid token provided"));
 
-      console.log("PAYLOAD", payload);
       const [error, emailDto] = UserEmailDto.execute(payload?.email)!;
 
       if (error) return res.status(400).json(CustomError.badRequest(error));
 
-      const user = await this.getUserUseCase.execute(emailDto!);
+      const user = await this.getUser.execute(emailDto!);
 
       if (!user)
-        return res.status(401).json(CustomError.unauthorized("Invalid user"));
+        return res
+          .status(401)
+          .json(CustomError.unauthorized("Invalid credentials"));
 
       //AQUI PODRIA AL OBTENER EL USER JUGAR CON ALGUNA PROPIEDAD PARA INVALIDAR SU TOKEN
 
@@ -55,10 +50,10 @@ export class AuthMiddleware {
 
       next();
     } catch (error) {
-      console.log("ERROR VALIDATE TOKEN", error);
+      console.log("ERROR AUTH MIDDLEWARE ERROR", error);
 
       if (error instanceof CustomError) throw error;
       throw CustomError.internalServer();
     }
-  }
+  };
 }

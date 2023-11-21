@@ -6,7 +6,6 @@ export class UserEmailDto {
 
   static execute(emailToValidate: string): [string?, UserEmailDto?] {
     if (!emailToValidate) return ["Missing email"];
-    console.log("EMAIL TO VALIDATE", emailToValidate);
 
     //Regex to validate email
     if (!emailRegex.test(emailToValidate)) return ["Invalid email"];

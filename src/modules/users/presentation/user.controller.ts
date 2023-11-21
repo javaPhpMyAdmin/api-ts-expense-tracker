@@ -1,18 +1,16 @@
-import { Response, Request } from 'express';
-import { UserDto, LoginUserDto } from '../domain/dtos';
-import { CustomError, Logger } from '../../../shared/domain';
+import { Response, Request } from "express";
+import { UserDto, LoginUserDto } from "../domain/dtos";
+import { CustomError, Logger } from "../../../shared/domain";
 import {
   DeleteUser,
   GetAllUsers,
   GetUserByEmail,
   UpdateUser,
-} from '../aplication/useCases';
-import { RegisterUserUseCase, LoginUserUseCase } from '../../auth';
+} from "../aplication/useCases";
+import { RegisterUserUseCase, LoginUserUseCase } from "../../auth";
 
 export class UserController {
   constructor(
-    private readonly registerUserUseCase: RegisterUserUseCase | undefined,
-    private readonly loginUserUseCase: LoginUserUseCase | undefined,
     private readonly getAllUsersUseCase: GetAllUsers,
     private readonly getUserByEmailUseCase: GetUserByEmail,
     private readonly updateUserUseCase: UpdateUser,
@@ -36,7 +34,8 @@ export class UserController {
   logoutUser(req: Request, res: Response) {}
 
   getUserByEmail(req: Request, res: Response) {
-    return res.status(200).send({ user: 'User Retrieved' });
+    const email = req.params.email;
+    return res.status(200).send({ user: "User Retrieved", email });
   }
 
   updateUser(req: Request, res: Response) {
@@ -44,7 +43,7 @@ export class UserController {
 
     if (error) res.status(400).send({ error: error });
 
-    const userId = '1'; //AFTER USER A MIDDLEWARE WE COULD GET USER ID FROM req.user.userId
+    const userId = "1"; //AFTER USER A MIDDLEWARE WE COULD GET USER ID FROM req.user.userId
     this.updateUserUseCase
       .updateUser(userDto!, userId)
       .then((user) => res.status(200).json(user))
@@ -54,7 +53,7 @@ export class UserController {
   }
 
   deleteUser(req: Request, res: Response) {
-    const userId = '1'; //AFTER USER A MIDDLEWARE WE COULD GET USER ID FROM req.user.userId
+    const userId = "1"; //AFTER USER A MIDDLEWARE WE COULD GET USER ID FROM req.user.userId
 
     this.deleteUserUseCase
       .deleteUser(userId)

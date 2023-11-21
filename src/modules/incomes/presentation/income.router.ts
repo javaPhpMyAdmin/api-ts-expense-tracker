@@ -12,12 +12,12 @@ incomeRouter.get(
   incomeController.getIncomesById.bind(incomeController)
 );
 incomeRouter.get(
-  "/get-incomes-by-user-id/:userId",
+  "/get-incomes-by-user-id",
   incomeController.getIncomesForUserId.bind(incomeController)
 );
 
 incomeRouter.post(
-  "/add-income/:userId",
+  "/add-income",
   incomeController.registerIncome.bind(incomeController)
 );
 

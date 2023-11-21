@@ -7,7 +7,7 @@ export class AuthUtility {
 
   async generateToken(
     payload: Object,
-    duration: string = envs.TOKEN_EXPIRATES_IN
+    duration: string = "1h"
   ): Promise<string | null> {
     return new Promise((resolve) => {
       jwt.sign(
@@ -40,6 +40,19 @@ export class AuthUtility {
       });
     });
   }
+
+  // verifyRefreshToken<T>(refreshToken: string): Promise<T | null> {
+  //   return new Promise((resolve) => {
+  //     jwt.verify(
+  //       refreshToken,
+  //       envs.REFRESH_TOKEN_SECRET_KEY,
+  //       (error, decoded) => {
+  //         if (error) return resolve(null);
+  //         resolve(decoded as T);
+  //       }
+  //     );
+  //   });
+  // }
 
   validateHeaders(req: Request): [string?, string?, string?] {
     const authorization = req.header("Authorization");

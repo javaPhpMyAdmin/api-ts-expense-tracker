@@ -32,7 +32,7 @@ export class LoginUserUseCase {
       if (userAuthenticated) {
         const accessToken = await this.authUtility.generateToken({
           userId: userAuthenticated?.getId,
-          userEmail: userAuthenticated?.getEmail,
+          email: userAuthenticated?.getEmail,
           userName: userAuthenticated?.getName,
         });
 

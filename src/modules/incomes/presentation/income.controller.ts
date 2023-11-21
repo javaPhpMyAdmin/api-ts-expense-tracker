@@ -25,9 +25,9 @@ export class IncomeController {
   };
 
   getIncomesForUserId = (req: Request, res: Response) => {
-    //UNA VEZ USE EL MIDDLEWARE
-    //req.body.user.id
-    const userId = req.params.userId;
+    console.log("USER MIDDLEWARE", req.body.user);
+    const userId = req.body.user.id;
+    // const userId = req.params.userId;
     this.getAllIncomes
       .getAllIncomes(userId)
       .then((incomes) => {
@@ -49,9 +49,8 @@ export class IncomeController {
     const [error, addIncomeDto] = AddIncomeDto.create(req.body);
 
     if (error) return res.status(400).send({ error: error });
-    //UNA VEZ USE EL MIDDLEWARE
-    //req.body.user.id
-    const userId = req.params.userId;
+
+    const userId = req.body.user.id;
     console.log("USER ID", userId);
 
     this.addIncome
