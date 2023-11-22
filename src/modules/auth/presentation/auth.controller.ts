@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginUserDto, RegisterUserDto } from "../domain/dtos";
-import { LoginUserUseCase, RegisterUserUseCase } from "../aplication/useCases";
+import {
+  LoginUserUseCase,
+  RefreshTokenUseCase,
+  RegisterUserUseCase,
+} from "../aplication/useCases";
 import { CustomError } from "../../../shared/domain";
 
 export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,
-    private readonly registerUserUseCase: RegisterUserUseCase
+    private readonly registerUserUseCase: RegisterUserUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase
   ) {}
 
   private handleError = (error: unknown, res: Response) => {
@@ -58,5 +63,19 @@ export class AuthController {
         });
       })
       .catch((e) => this.handleError(e, res));
+  }
+
+  refreshToken(req: Request, res: Response) {
+    const refreshToken = req.header("Refresh-Token");
+    console.log(refreshToken);
+
+    this.refreshTokenUseCase
+      .execute(refreshToken!)
+      .then((response) => {
+        console.log("RESPONSE REFRESH TOKEN USE CASE", response);
+      })
+      .catch((e) => this.handleError(e, res));
+
+    res.status(200).json({ message: "Refresh token" });
   }
 }

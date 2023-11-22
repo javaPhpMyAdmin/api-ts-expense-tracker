@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { UserDto, LoginUserDto } from "../domain/dtos";
+import { UserDto, UserEmailDto } from "../domain/dtos";
 import { CustomError, Logger } from "../../../shared/domain";
 import {
   DeleteUser,
@@ -7,7 +7,6 @@ import {
   GetUserByEmail,
   UpdateUser,
 } from "../aplication/useCases";
-import { RegisterUserUseCase, LoginUserUseCase } from "../../auth";
 
 export class UserController {
   constructor(
@@ -35,6 +34,10 @@ export class UserController {
 
   getUserByEmail(req: Request, res: Response) {
     const email = req.params.email;
+
+    const [error, emailDto] = UserEmailDto.execute(email);
+    if (error) res.status(400).send(error);
+
     return res.status(200).send({ user: "User Retrieved", email });
   }
 

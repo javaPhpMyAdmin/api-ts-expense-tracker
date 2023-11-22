@@ -3,6 +3,7 @@ import { AddIncome, GetAllIncomes, GetIncomeById } from "../aplication";
 import { AddIncomeDto } from "../domain/dtos/addIncome.dto";
 import { CustomError } from "../../../shared/domain/errors";
 import { Logger } from "../../../shared/domain/logger";
+import { User } from "modules/users/domain";
 export class IncomeController {
   constructor(
     private readonly getAllIncomes: GetAllIncomes,

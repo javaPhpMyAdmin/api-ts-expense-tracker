@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import {
   ValidateTokenUseCase,
   GetUserByEmail,
-  ValidateTokenProps,
 } from "../../../../modules/auth/aplication/useCases";
 import { AuthUtility } from "../../../../modules/auth/utils";
 import { UserEmailDto } from "../../../../modules/users/domain";
+import { UserToMiddleware } from "../mappers";
 
 export class AuthMiddleware {
   constructor(
@@ -37,7 +37,7 @@ export class AuthMiddleware {
 
       if (error) return res.status(400).json(CustomError.badRequest(error));
 
-      const user = await this.getUser.execute(emailDto!);
+      const user = await this.getUser.execute(emailDto?.email!);
 
       if (!user)
         return res
@@ -46,12 +46,11 @@ export class AuthMiddleware {
 
       //AQUI PODRIA AL OBTENER EL USER JUGAR CON ALGUNA PROPIEDAD PARA INVALIDAR SU TOKEN
 
-      req.body.user = user;
+      const userToReq = UserToMiddleware.create(user);
+      req.body.user = userToReq;
 
       next();
     } catch (error) {
-      console.log("ERROR AUTH MIDDLEWARE ERROR", error);
-
       if (error instanceof CustomError) throw error;
       throw CustomError.internalServer();
     }

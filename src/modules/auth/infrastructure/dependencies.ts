@@ -10,6 +10,7 @@ import {
   MockDataSourceImpl,
   MongoDataSourceImpl,
   RegisterUserUseCase,
+  RefreshTokenUseCase,
 } from "..";
 import { ConsoleLogger } from "../../../shared/infrastructure";
 
@@ -32,7 +33,10 @@ const authRepository = new AuthRepositoryImpl(mongoDatasource);
 const validateTokenUseCase = new ValidateTokenUseCase(authUtility);
 
 //GET USER USE CASE
-const getUser = new GetUserByEmail(userRepository);
+const getUser = new GetUserByEmail(authRepository);
+
+//REFRESH TOKEN USE CASE
+const refreshToken = new RefreshTokenUseCase(mongoDatasource, authUtility);
 
 //MIDDLEWARE FOR AUTHENTICATION
 export const authMiddleware = new AuthMiddleware(
@@ -52,4 +56,8 @@ const registerUser = new RegisterUserUseCase(
 const loginUser = new LoginUserUseCase(authUtility, authRepository, logger);
 
 //AUTH CONTROLLER INSTANCE
-export const authController = new AuthController(loginUser, registerUser);
+export const authController = new AuthController(
+  loginUser,
+  registerUser,
+  refreshToken
+);

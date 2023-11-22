@@ -8,8 +8,20 @@ import { AuthDatasource } from "../../../domain/datasources";
 
 export class MongoDataSourceImpl implements AuthDatasource {
   constructor() {}
-  async getUser(emailDto: UserEmailDto): Promise<User | null> {
-    throw new Error("Method not implemented.");
+  async getUser(emailValidated: string): Promise<User | null> {
+    try {
+      const user = await UserModel.findOne({
+        email: emailValidated,
+      });
+      if (!user) return null;
+
+      return UserMapper.userEntityFromObject(user);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
   }
 
   async saveUser(registerUserDto: RegisterUserDto): Promise<User | null> {
@@ -71,7 +83,7 @@ export class MongoDataSourceImpl implements AuthDatasource {
   }
   async saveRefreshToken(
     userId: string,
-    accessToken: string
+    refreshToken: string
   ): Promise<User | null> {
     throw new Error("Method not implemented.");
   }

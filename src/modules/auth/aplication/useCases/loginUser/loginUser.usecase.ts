@@ -1,5 +1,4 @@
 import { LoginUserDto, User, UserRepository } from "modules/users/domain";
-import { RegisterUserUseCase } from "..";
 import { CustomError, Logger } from "../../../../../shared/domain";
 import { AuthUtility } from "../../../utils";
 import { AuthRepository } from "../../..";
@@ -52,7 +51,7 @@ export class LoginUserUseCase {
         //   accessToken!
         // );
         this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
-        return { userAuthenticated, accessToken, refreshToken: null };
+        return { userAuthenticated, accessToken, refreshToken };
       }
     } catch (error) {
       if (error instanceof CustomError) {

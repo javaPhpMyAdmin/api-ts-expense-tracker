@@ -7,7 +7,7 @@ export class AuthUtility {
 
   async generateToken(
     payload: Object,
-    duration: string = "1h"
+    duration: string = "1h" //envs.TOKEN_EXPIRATES_IN
   ): Promise<string | null> {
     return new Promise((resolve) => {
       jwt.sign(
@@ -25,10 +25,19 @@ export class AuthUtility {
 
   generateRefreshToken(
     payload: Object,
-    duration: string = envs.TOKEN_EXPIRATES_IN
+    duration: string = "1h" //envs.TOKEN_EXPIRATES_IN
   ): Promise<string | null> {
     return new Promise((resolve) => {
-      resolve(null);
+      jwt.sign(
+        payload,
+        envs.REFRESH_TOKEN_SECRET_KEY,
+        { expiresIn: duration },
+        (error, token) => {
+          if (error) return resolve(null);
+
+          resolve(token!);
+        }
+      );
     });
   }
 
@@ -41,18 +50,18 @@ export class AuthUtility {
     });
   }
 
-  // verifyRefreshToken<T>(refreshToken: string): Promise<T | null> {
-  //   return new Promise((resolve) => {
-  //     jwt.verify(
-  //       refreshToken,
-  //       envs.REFRESH_TOKEN_SECRET_KEY,
-  //       (error, decoded) => {
-  //         if (error) return resolve(null);
-  //         resolve(decoded as T);
-  //       }
-  //     );
-  //   });
-  // }
+  verifyRefreshToken<T>(refreshToken: string): Promise<T | null> {
+    return new Promise((resolve) => {
+      jwt.verify(
+        refreshToken,
+        envs.REFRESH_TOKEN_SECRET_KEY,
+        (error, decoded) => {
+          if (error) return resolve(null);
+          resolve(decoded as T);
+        }
+      );
+    });
+  }
 
   validateHeaders(req: Request): [string?, string?, string?] {
     const authorization = req.header("Authorization");

@@ -1,19 +1,14 @@
-import {
-  UserDataSource,
-  UserDto,
-  UserEmailDto,
-  UserRepository,
-  User,
-  LoginUserDto,
-} from '../../domain';
-import { CustomError } from '../../../../shared/domain';
+import { UserDataSource, UserDto, UserRepository, User } from "../../domain";
+import { CustomError } from "../../../../shared/domain";
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly userDataSource: UserDataSource) {}
 
-  async getUserByEmail(emailDto: UserEmailDto): Promise<User | null> {
+  async getUserByEmail(emailValidated: string): Promise<User | null> {
     try {
-      const user = await this.userDataSource.getUserByEmail(emailDto);
+      const user = await this.userDataSource.getUserByEmail(emailValidated);
+      console.log("USER INSIDE USER REPOSITORY", user);
+
       if (!user) return null;
       return user;
     } catch (error) {
@@ -23,23 +18,10 @@ export class UserRepositoryImpl implements UserRepository {
       throw CustomError.internalServer();
     }
   }
-  // async saveUser(userDto: UserDto): Promise<User | null> {
-  //   try {
-  //     const user = await this.userDataSource.saveUser(userDto);
 
-  //     if (!user) return null;
-  //     return user;
-  //   } catch (error) {
-  //     if (error instanceof CustomError) {
-  //       throw error;
-  //     }
-  //     throw CustomError.internalServer();
-  //   }
-  // }
-
-  async removeUser(emailDto: UserEmailDto): Promise<User | null> {
+  async removeUser(emailValidated: string): Promise<User | null> {
     try {
-      const user = await this.userDataSource.removeUser(emailDto);
+      const user = await this.userDataSource.removeUser(emailValidated);
       if (!user) return null;
       return user;
     } catch (error) {

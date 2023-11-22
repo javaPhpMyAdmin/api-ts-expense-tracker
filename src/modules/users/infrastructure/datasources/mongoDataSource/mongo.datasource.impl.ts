@@ -1,13 +1,14 @@
-import { UserModel } from '../../../../../data/mongodb';
-import { CustomError } from '../../../../../shared/domain';
-import { User, UserDataSource, UserDto, UserEmailDto } from '../../../domain';
-import { UserMapper } from '../../mappers';
+import { UserModel } from "../../../../../data/mongodb";
+import { CustomError } from "../../../../../shared/domain";
+import { User, UserDataSource, UserDto } from "../../../domain";
+import { UserMapper } from "../../mappers";
 
 export class MongoDataSourceImpl implements UserDataSource {
-  async getUserByEmail(emailDto: UserEmailDto): Promise<User | null> {
-    const { email } = emailDto;
+  async getUserByEmail(emailValidated: string): Promise<User | null> {
     try {
-      const user = await UserModel.findOne({ email });
+      const user = await UserModel.findOne({
+        email: emailValidated,
+      });
       if (!user) return null;
 
       return UserMapper.userEntityFromObject(user);
@@ -19,11 +20,11 @@ export class MongoDataSourceImpl implements UserDataSource {
     }
   }
 
-  async removeUser(emailDto: UserEmailDto): Promise<User | null> {
-    throw new Error('Method not implemented.');
+  async removeUser(emailValidated: string): Promise<User | null> {
+    throw new Error("Method not implemented.");
   }
   async updateUser(userDto: UserDto): Promise<User | null> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
   async getAllUsers(): Promise<User[] | null> {
     try {

@@ -4,13 +4,14 @@ import {
   UserEmailDto,
   UserRepository,
 } from "../../../../../modules/users/domain";
+import { AuthRepository } from "modules/auth";
 
 export class GetUserByEmail {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly authRepository: AuthRepository) {}
 
-  async execute(emailDto: UserEmailDto): Promise<User | undefined> {
+  async execute(emailValidated: string): Promise<User | undefined> {
     try {
-      const user = await this.userRepository.getUserByEmail(emailDto);
+      const user = await this.authRepository.getUser(emailValidated);
       if (!user) {
         const error = new Error("Something went wrong trying to get the user");
         throw error;
