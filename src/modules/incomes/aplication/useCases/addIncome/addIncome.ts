@@ -1,4 +1,3 @@
-import { ObjectId } from "mongoose";
 import { CustomError } from "../../../../../shared/domain";
 import { Logger } from "../../../../../shared/domain/logger/logger";
 import { AddIncomeDto } from "../../../domain/dtos/addIncome.dto";

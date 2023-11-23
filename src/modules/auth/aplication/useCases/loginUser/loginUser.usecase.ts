@@ -36,20 +36,11 @@ export class LoginUserUseCase {
         });
 
         const refreshToken = await this.authUtility.generateRefreshToken({
-          userId: userAuthenticated.getId,
-          userEmail: userAuthenticated.getEmail,
-          userName: userAuthenticated.getName,
+          userId: userAuthenticated?.getId,
+          userEmail: userAuthenticated?.getEmail,
+          userName: userAuthenticated?.getName,
         });
 
-        // await this.authRepository.saveToken(
-        //   userAuthenticated.getEmail,
-        //   accessToken!
-        // );
-
-        // await this.authRepository.saveRefreshToken(
-        //   userAuthenticated.getEmail,
-        //   accessToken!
-        // );
         this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
         return { userAuthenticated, accessToken, refreshToken };
       }

@@ -16,17 +16,12 @@ export class AuthMiddleware {
   ) {}
 
   validateToken = async (req: Request, res: Response, next: NextFunction) => {
-    const [errorHeader, errorToken, token] =
-      this.authUtility?.validateHeaders(req)!;
-
-    if (errorToken)
-      return res.status(401).json(CustomError.unauthorized(errorToken));
-
-    if (errorHeader)
-      return res.status(401).json(CustomError.unauthorized(errorHeader));
+    const token = req.cookies["user-session"];
+    console.log("validateToken", token);
 
     try {
-      const payload = await this.validateTokenUseCase.verify(token!);
+      const payload = await this.validateTokenUseCase.verify(token);
+      console.log("PAYLOAD AUTH MIDDLEWARE VALIDATE TOKEN", payload);
 
       if (!payload)
         return res
@@ -51,8 +46,17 @@ export class AuthMiddleware {
 
       next();
     } catch (error) {
-      if (error instanceof CustomError) throw error;
-      throw CustomError.internalServer();
+      res.status(500).json({ error: CustomError.internalServer() });
     }
+  };
+
+  validateHeaders = async (req: Request, res: Response, next: NextFunction) => {
+    const userCookie = req.cookies;
+    const userSession = userCookie["user-session"];
+
+    if (!userSession)
+      return res.status(401).json({ error: "Not cookie provided" });
+
+    next();
   };
 }

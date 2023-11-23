@@ -1,6 +1,5 @@
-import { ObjectId } from "mongoose";
-import { AddIncomeDto } from "../dtos/addIncome.dto";
-import { Income } from "../entities/income.entity";
+import { AddIncomeDto } from "../dtos";
+import { Income } from "../entities";
 
 export abstract class IncomeRepository {
   abstract getIncomeById(id: string): Promise<Income | null>;

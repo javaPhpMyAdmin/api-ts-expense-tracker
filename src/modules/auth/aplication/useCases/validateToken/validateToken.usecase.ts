@@ -12,15 +12,14 @@ export type ValidateTokenProps = {
 export class ValidateTokenUseCase {
   constructor(private readonly authUtil: AuthUtility) {}
   async verify(
-    accessToken: string
+    token: string
   ): Promise<{ id: string; email: string; username: string } | null> {
     try {
-      const payload = await this.authUtil.verifyAccessToken<ValidateTokenProps>(
-        accessToken!
-      );
+      const payload =
+        await this.authUtil.verifyRefreshToken<ValidateTokenProps>(token!);
 
       if (!payload) return null;
-      return payload;
+      return payload as ValidateTokenProps;
     } catch (error) {
       throw CustomError.internalServer();
     }

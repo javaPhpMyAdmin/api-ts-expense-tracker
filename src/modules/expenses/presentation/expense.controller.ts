@@ -1,33 +1,31 @@
-import { Request, Response } from 'express';
-import { AddExpense, GetAllExpenses, GetExpenseById } from '../aplication';
-import { AddExpenseDto } from '../domain/dtos/addExpense.dto';
-import { CustomError } from '../../../shared/domain/errors';
-import { Logger } from '../../../shared/domain/logger';
-import { User } from 'modules/users/domain';
+import { Request, Response } from "express";
+import { AddExpense, GetAllExpenses, GetExpenseById } from "../aplication";
+import { AddExpenseDto } from "../domain/dtos/addExpense.dto";
+import { CustomError } from "../../../shared/domain/errors";
+import { Logger } from "../../../shared/domain/logger";
 
 export class ExpenseController {
   constructor(
-    private readonly getAllExpenses?: GetAllExpenses,
-    private readonly getExpenseById?: GetExpenseById,
-    private readonly addExpense?: AddExpense,
-    private readonly logger?: Logger
+    private readonly getAllExpenses: GetAllExpenses,
+    private readonly getExpenseById: GetExpenseById,
+    private readonly addExpense: AddExpense,
+    private readonly logger: Logger
   ) {}
 
   private handleError = (error: unknown, res: Response) => {
     if (error instanceof CustomError) {
-      this.logger?.error(error.message);
+      this.logger.error(error.message);
       return res.status(error.statusCode).json({
         message: error.message,
       });
     }
 
-    this.logger?.error(String(error));
+    this.logger.error(String(error));
 
     res.status(500).json(CustomError.internalServer());
   };
 
   getExpensesForUserId = (req: Request, res: Response) => {
-    console.log('USER MIDDLEWARE', req.body.user);
     const userId = req.body.user.id;
     // const userId = req.params.userId;
     this.getAllExpenses
@@ -53,7 +51,6 @@ export class ExpenseController {
     if (error) return res.status(400).send({ error: error });
 
     const userId = req.body.user.id;
-    console.log('USER ID', userId);
 
     this.addExpense
       .registerExpense(addIncomeDto!, userId)
@@ -64,7 +61,7 @@ export class ExpenseController {
   async deleteExpense(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      res.status(200).send({ message: 'Expense deleted successfully' });
+      res.status(200).send({ message: "Expense deleted successfully" });
     } catch (e) {
       this.handleError(e, res);
     }

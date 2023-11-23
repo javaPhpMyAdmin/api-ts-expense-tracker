@@ -50,13 +50,15 @@ export class AuthUtility {
     });
   }
 
-  verifyRefreshToken<T>(refreshToken: string): Promise<T | null> {
+  verifyRefreshToken<T>(refreshToken: string): Promise<T | string | null> {
     return new Promise((resolve) => {
       jwt.verify(
         refreshToken,
         envs.REFRESH_TOKEN_SECRET_KEY,
         (error, decoded) => {
+          if (error?.message !== "jwt expired") return resolve("expired-token");
           if (error) return resolve(null);
+
           resolve(decoded as T);
         }
       );

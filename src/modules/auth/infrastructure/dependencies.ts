@@ -2,7 +2,6 @@ import { AuthUtility } from "../../../modules/auth/utils";
 import { ValidateTokenUseCase } from "../aplication/useCases/validateToken";
 import { AuthMiddleware } from "../presentation/middlewares";
 import { GetUserByEmail } from "../aplication/useCases/getUser";
-import { userRepository } from "../../../modules/users/infrastructure/dependencies";
 import { AuthController } from "../presentation";
 import {
   AuthRepositoryImpl,
