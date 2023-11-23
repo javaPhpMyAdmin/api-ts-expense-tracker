@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from "express";
-import { LoginUserDto, RegisterUserDto } from "../domain/dtos";
+import { Request, Response } from 'express';
+import { LoginUserDto, RegisterUserDto } from '../domain/dtos';
 import {
   LoginUserUseCase,
   RefreshTokenUseCase,
   RegisterUserUseCase,
-} from "../aplication/useCases";
-import { CustomError } from "../../../shared/domain";
+} from '../aplication/useCases';
+import { CustomError } from '../../../shared/domain';
 
 export class AuthController {
   constructor(
@@ -18,7 +18,7 @@ export class AuthController {
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({
         message: error.message,
-        handledError: "Auth Controller",
+        handledError: 'Auth Controller',
       });
     } else {
       res.status(500).json(CustomError.internalServer());
@@ -34,7 +34,7 @@ export class AuthController {
       .then(async (response) => {
         if (!response?.userRegistered)
           return res.status(403).json({
-            error: "IMPOSSIBLE TO REGISTER USER",
+            error: 'IMPOSSIBLE TO REGISTER USER',
           });
         res.json({
           user: response?.userRegistered,
@@ -54,7 +54,7 @@ export class AuthController {
       .loginUser(loginUserDto!)
       .then((response) => {
         if (!response?.userAuthenticated)
-          return res.status(403).json({ error: "INVALID CREDENTIALS" });
+          return res.status(403).json({ error: 'INVALID CREDENTIALS' });
 
         res.status(200).json({
           user: response?.userAuthenticated,
@@ -66,16 +66,16 @@ export class AuthController {
   }
 
   refreshToken(req: Request, res: Response) {
-    const refreshToken = req.header("Refresh-Token");
+    const refreshToken = req.header('Refresh-Token');
     console.log(refreshToken);
 
     this.refreshTokenUseCase
       .execute(refreshToken!)
       .then((response) => {
-        console.log("RESPONSE REFRESH TOKEN USE CASE", response);
+        console.log('RESPONSE REFRESH TOKEN USE CASE', response);
       })
       .catch((e) => this.handleError(e, res));
 
-    res.status(200).json({ message: "Refresh token" });
+    res.status(200).json({ message: 'Refresh token' });
   }
 }

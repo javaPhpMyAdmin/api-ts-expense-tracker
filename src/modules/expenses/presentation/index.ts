@@ -1,6 +1,2 @@
-export class MongoDatabase {
-  static async connect() {
-    try {
-    } catch (error) {}
-  }
-}
+export * from './expense.controller';
+export * from './expense.router';
