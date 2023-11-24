@@ -1,13 +1,13 @@
-import { envs } from "../../../shared/infrastructure/envs";
-import { Request } from "express";
-import jwt from "jsonwebtoken";
+import { envs } from '../../../shared/infrastructure/envs';
+import { Request } from 'express';
+import jwt from 'jsonwebtoken';
 
 export class AuthUtility {
   constructor() {}
 
   async generateToken(
     payload: Object,
-    duration: string = "1h" //envs.TOKEN_EXPIRATES_IN
+    duration: string = '1h' //envs.TOKEN_EXPIRATES_IN
   ): Promise<string | null> {
     return new Promise((resolve) => {
       jwt.sign(
@@ -25,7 +25,7 @@ export class AuthUtility {
 
   generateRefreshToken(
     payload: Object,
-    duration: string = "1h" //envs.TOKEN_EXPIRATES_IN
+    duration: string = '1h' //envs.TOKEN_EXPIRATES_IN
   ): Promise<string | null> {
     return new Promise((resolve) => {
       jwt.sign(
@@ -50,30 +50,25 @@ export class AuthUtility {
     });
   }
 
-  verifyRefreshToken<T>(refreshToken: string): Promise<T | string | null> {
+  verifyRefreshToken<T>(token: string): Promise<T | string | null> {
     return new Promise((resolve) => {
-      jwt.verify(
-        refreshToken,
-        envs.REFRESH_TOKEN_SECRET_KEY,
-        (error, decoded) => {
-          if (error?.message !== "jwt expired") return resolve("expired-token");
-          if (error) return resolve(null);
+      jwt.verify(token, envs.REFRESH_TOKEN_SECRET_KEY, (error, decoded) => {
+        if (error?.message === 'jwt expired') return resolve('expired-token');
+        if (error) return resolve(null);
 
-          resolve(decoded as T);
-        }
-      );
+        resolve(decoded as T);
+      });
     });
   }
 
   validateHeaders(req: Request): [string?, string?, string?] {
-    const authorization = req.header("Authorization");
-    if (!authorization) return ["No token provided"];
+    const userCookie = req.cookies;
+    const userSession = userCookie['userSession'];
+    if (!userCookie) return ['No cookie provided', undefined, undefined];
 
-    if (!authorization.startsWith("Bearer "))
-      return [undefined, "Invalid Bearer token provided", undefined];
+    if (!userSession)
+      return [undefined, 'No session for this user provided', undefined];
 
-    const token = authorization.split(" ").at(1) || "";
-
-    return [undefined, undefined, token];
+    return [undefined, undefined, userSession];
   }
 }
