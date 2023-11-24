@@ -1,4 +1,4 @@
-import { LoginUserDto, User, UserRepository } from "modules/users/domain";
+import { LoginUserDto, User } from "../../../../../modules/users/domain";
 import { CustomError, Logger } from "../../../../../shared/domain";
 import { AuthUtility } from "../../../utils";
 import { AuthRepository } from "../../..";
@@ -49,7 +49,7 @@ export class LoginUserUseCase {
         this.logger.error(`${useCase} - ${error.message}`);
         throw error;
       }
-      throw CustomError.internalServer();
+      throw CustomError.internalServer("LOGIN USER USE CASE");
     }
   }
 }

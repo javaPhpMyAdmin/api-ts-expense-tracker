@@ -1,12 +1,12 @@
-import { CustomError } from '../../../../shared/domain';
-import { NextFunction, Request, Response } from 'express';
+import { CustomError, ErrorMessages } from "../../../../shared/domain";
+import { NextFunction, Request, Response } from "express";
 import {
   ValidateTokenUseCase,
   GetUserByEmail,
-} from '../../../../modules/auth/aplication/useCases';
-import { AuthUtility } from '../../../../modules/auth/utils';
-import { UserEmailDto } from '../../../../modules/users/domain';
-import { UserToMiddleware } from '../mappers';
+} from "../../../../modules/auth/aplication/useCases";
+import { AuthUtility } from "../../../../modules/auth/utils";
+import { UserEmailDto } from "../../../../modules/users/domain";
+import { UserToMiddleware } from "../mappers";
 
 export class AuthMiddleware {
   constructor(
@@ -22,18 +22,23 @@ export class AuthMiddleware {
       const payload = await this.validateTokenUseCase.verify(token);
 
       if (!payload)
-        return res.status(403).json(CustomError.forbidden('FORBIDDEN'));
+        return res.status(403).json({
+          error: CustomError.forbidden(`${ErrorMessages.FORBIDDEN} 2023`),
+        });
 
       const [error, emailDto] = UserEmailDto.execute(payload?.userEmail)!;
 
-      if (error) return res.status(400).json(CustomError.badRequest(error));
+      if (error)
+        return res
+          .status(400)
+          .json({ error: CustomError.badRequest(ErrorMessages.BAD_REQUEST) });
 
       const user = await this.getUser.execute(emailDto?.email!);
 
       if (!user)
-        return res
-          .status(401)
-          .json(CustomError.unauthorized('Invalid credentials'));
+        return res.status(401).json({
+          error: CustomError.unauthorized(`${ErrorMessages.UNAUTHORIZED} 2023`),
+        });
 
       //AQUI PODRIA AL OBTENER EL USER JUGAR CON ALGUNA PROPIEDAD PARA INVALIDAR SU TOKEN
 
@@ -47,14 +52,19 @@ export class AuthMiddleware {
   };
 
   validateHeaders = async (req: Request, res: Response, next: NextFunction) => {
-    const [errorCookie, errorSession, userSession] =
-      this.authUtility.validateHeaders(req);
+    const [errorSession, userSession] = this.authUtility.validateHeaders(req);
 
-    if (errorCookie || errorSession)
-      return res.status(401).json(CustomError.unauthorized('unauthorized'));
+    if (errorSession)
+      return res.status(401).json({
+        error: CustomError.unauthorized(
+          `${ErrorMessages.UNAUTHORIZED}, ${errorSession}`
+        ),
+      });
 
     if (!userSession)
-      return res.status(401).json({ error: 'Not cookie provided' });
+      return res.status(401).json({
+        error: CustomError.unauthorized(ErrorMessages.NOT_COOKIE_PROVIDED),
+      });
 
     next();
   };

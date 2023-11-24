@@ -21,12 +21,16 @@ export class HTTPRouter {
     //INCOMES ROUTES
     app.use(
       `${envs.API_VERSION_PREFIX}`,
-      authMiddleware.validateToken,
+      [authMiddleware.validateHeaders, authMiddleware.validateToken],
       incomeRouter
     );
 
     //EXPENSES ROUTES
-    app.use(`${envs.API_VERSION_PREFIX}`, ExpenseRoutes.routes);
+    app.use(
+      `${envs.API_VERSION_PREFIX}`,
+      [authMiddleware.validateHeaders, authMiddleware.validateToken],
+      ExpenseRoutes.routes
+    );
 
     //NOT FOUND ROUTES
     app.use("/", (req, res) => {

@@ -1,6 +1,6 @@
 import { AuthRepository, AuthUtility, ValidateTokenProps } from "modules/auth";
-import jwt from "jsonwebtoken";
 import { CustomError } from "../../../../../shared/domain";
+import { jwtDecode } from "jwt-decode";
 
 export class RefreshTokenUseCase {
   constructor(
@@ -10,7 +10,7 @@ export class RefreshTokenUseCase {
 
   async execute(
     refreshToken: string
-  ): Promise<{ accessToken: string; refreshToken: string } | null> {
+  ): Promise<{ refreshToken: string } | null> {
     try {
       //VERIFY REFRESH TOKEN
       const validRefreshToken =
@@ -20,13 +20,14 @@ export class RefreshTokenUseCase {
 
       if (!validRefreshToken) return null;
 
-      //GET THE USER ID FROM THE VALID REFRESH TOKEN
-      console.log("TOKEN DECODED", validRefreshToken);
-
+      const decoded: ValidateTokenProps = jwtDecode(refreshToken);
+      const { id, userEmail, username } = decoded;
       //GENERATE A NEW ACCESS TOKEN
-      const newAccessToken = await this.authUtility.generateToken(
-        validRefreshToken
-      );
+      const newAccessToken = await this.authUtility.generateRefreshToken({
+        id,
+        userEmail,
+        username,
+      });
 
       if (!newAccessToken) return null;
 
@@ -36,7 +37,7 @@ export class RefreshTokenUseCase {
       //     refreshToken
       //   );
 
-      return { accessToken: newAccessToken, refreshToken };
+      return { refreshToken: newAccessToken };
     } catch (error) {
       throw CustomError.internalServer();
     }

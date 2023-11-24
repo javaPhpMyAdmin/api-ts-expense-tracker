@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
-import { LoginUserDto, RegisterUserDto } from '../domain/dtos';
+import { Request, Response } from "express";
+import { LoginUserDto, RegisterUserDto } from "../domain/dtos";
 import {
   LoginUserUseCase,
   RefreshTokenUseCase,
   RegisterUserUseCase,
-} from '../aplication/useCases';
-import { CustomError } from '../../../shared/domain';
+} from "../aplication/useCases";
+import { CustomError, ErrorMessages } from "../../../shared/domain";
+import { MakeCookie } from "../utils";
 
 export class AuthController {
   constructor(
@@ -18,12 +19,14 @@ export class AuthController {
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({
         message: error.message,
-        handledError: 'Auth Controller',
       });
     } else {
-      res.status(500).json(CustomError.internalServer());
+      res.status(500).json({
+        error: CustomError.internalServer(ErrorMessages.INTERVAL_SERVER),
+      });
     }
   };
+
   registerUser(req: Request, res: Response) {
     const [error, registerUserDto] = RegisterUserDto.create(req.body);
 
@@ -33,12 +36,13 @@ export class AuthController {
       .registerUser(registerUserDto!)
       .then(async (response) => {
         if (!response?.userRegistered)
-          return res.status(403).json({
-            error: 'IMPOSSIBLE TO REGISTER USER',
+          return res.status(401).json({
+            error: CustomError.unauthorized(
+              ErrorMessages.IMPOSSIBLE_REGISTER_USER
+            ),
           });
         res.json({
           user: response?.userRegistered,
-          token: response?.accessToken,
           refreshToken: response?.refreshToken,
         });
       })
@@ -54,43 +58,49 @@ export class AuthController {
       .loginUser(loginUserDto!)
       .then((response) => {
         if (!response?.userAuthenticated)
-          return res.status(401).json({ error: 'INVALID CREDENTIALS' });
+          return res.status(401).json({
+            error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
+          });
 
-        //SET THE COOKIES FOR AUTHENTICATION
-        res.cookie('userSession', response?.refreshToken, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'none',
-          maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
-
-        res.status(200).json({
+        const customRes = MakeCookie.create(res, response?.refreshToken!);
+        customRes.status(200).json({
           user: response?.userAuthenticated,
-          token: response?.accessToken,
-          refreshToken: response?.refreshToken,
         });
       })
       .catch((e) => this.handleError(e, res));
   }
 
   refreshToken(req: Request, res: Response) {
-    const refreshToken = req.header('Refresh-Token');
-    console.log(refreshToken);
+    const userSession = req.cookies.userSession;
+    if (!userSession) return res.status(204);
 
     this.refreshTokenUseCase
-      .execute(refreshToken!)
+      .execute(userSession)
       .then((response) => {
-        console.log('RESPONSE REFRESH TOKEN USE CASE', response);
+        if (!response?.refreshToken || !response)
+          return res.status(401).json({
+            error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
+          });
+
+        const customRes = MakeCookie.create(res, response?.refreshToken);
+        customRes.status(200).json({
+          message: "Token has been refreshed",
+          token: response?.refreshToken,
+        });
       })
       .catch((e) => this.handleError(e, res));
-
-    res.status(200).json({ message: 'Refresh token' });
   }
 
   logout(req: Request, res: Response) {
     const userSession = req.cookies.userSession;
-    console.log(userSession);
+    if (!userSession) return res.status(204);
 
-    res.status(200).json({ message: 'GOOD BYE' });
+    res.clearCookie("userSession", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.status(200).json({ message: "Cookie cleared" });
   }
 }
