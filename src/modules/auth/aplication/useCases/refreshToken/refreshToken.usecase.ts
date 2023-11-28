@@ -1,6 +1,6 @@
-import { AuthRepository, AuthUtility, ValidateTokenProps } from "modules/auth";
-import { CustomError } from "../../../../../shared/domain";
-import { jwtDecode } from "jwt-decode";
+import { AuthRepository, AuthUtility, ValidateTokenProps } from 'modules/auth';
+import { CustomError } from '../../../../../shared/domain';
+import { jwtDecode } from 'jwt-decode';
 
 export class RefreshTokenUseCase {
   constructor(
@@ -8,9 +8,7 @@ export class RefreshTokenUseCase {
     private readonly authUtility: AuthUtility
   ) {}
 
-  async execute(
-    refreshToken: string
-  ): Promise<{ refreshToken: string } | null> {
+  async run(refreshToken: string): Promise<{ refreshToken: string } | null> {
     try {
       //VERIFY REFRESH TOKEN
       const validRefreshToken =
@@ -30,12 +28,6 @@ export class RefreshTokenUseCase {
       });
 
       if (!newAccessToken) return null;
-
-      //RETURN THEM, ACCESS TOKEN AND REFRESH TOKEN
-      //   const token = await this.authRepository.saveRefreshToken(
-      //     decoded?.userId!,
-      //     refreshToken
-      //   );
 
       return { refreshToken: newAccessToken };
     } catch (error) {

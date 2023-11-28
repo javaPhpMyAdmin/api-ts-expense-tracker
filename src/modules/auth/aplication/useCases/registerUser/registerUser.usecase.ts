@@ -1,14 +1,10 @@
-import {
-  User,
-  UserEmailDto,
-  UserRepository,
-} from "../../../../../modules/users/domain";
-import { CustomError } from "../../../../../shared/domain";
-import { Logger } from "../../../../../shared/domain/logger";
-import { RegisterUserDto } from "../../../../../modules/auth/domain/dtos";
-import { AuthRepository, AuthUtility } from "../../..";
+import { User } from '../../../../../modules/users/domain';
+import { CustomError } from '../../../../../shared/domain';
+import { Logger } from '../../../../../shared/domain/logger';
+import { RegisterUserDto } from '../../../../../modules/auth/domain/dtos';
+import { AuthRepository, AuthUtility } from '../../..';
 
-const useCase = "[Use case - RegisterUser]";
+const useCase = '[USE CASE - REGISTER USER]';
 export class RegisterUserUseCase {
   constructor(
     private readonly authUtility: AuthUtility,
@@ -19,12 +15,11 @@ export class RegisterUserUseCase {
   async registerUser(registerUserDto: RegisterUserDto): Promise<
     | {
         userRegistered: User;
-        accessToken: string | null;
         refreshToken: string | null;
       }
     | undefined
   > {
-    this.logger.info(`${useCase} - AUTH REGISTERING USER...`);
+    this.logger.info(`${useCase} - REGISTERING USER...`);
     try {
       const userRegistered = await this.authRepository.saveUser(
         registerUserDto
@@ -45,13 +40,8 @@ export class RegisterUserUseCase {
           userName: userRegistered.getName,
         });
 
-        // await this.authRepository.saveToken(
-        //   userAuthenticated.getEmail,
-        //   accessToken!
-        // );
-
         this.logger.info(`${useCase} - USER REGISTERED SUCCESSFULLY`);
-        return { userRegistered, accessToken, refreshToken: null };
+        return { userRegistered, refreshToken };
       }
     } catch (error) {
       this.logger.error(`${useCase} - ERROR REGISTERING USER, ${error}`);

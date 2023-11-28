@@ -20,14 +20,28 @@ export class App {
 
   private setupExpress(): void {
     this.app = express();
+    this.app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Access-Control-Allow-Origin', req.headers.origin);
+      res.header(
+        'Access-Control-Allow-Methods',
+        'GET,PUT,POST,DELETE,UPDATE,OPTIONS'
+      );
+      res.header(
+        'Access-Control-Allow-Headers',
+        'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
+      );
+      next();
+    });
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
     this.app.use(
       cors({
-        origin: ['*'],
+        origin: ['http://localhost:5173'],
       })
     );
+
     this.setupRouters();
   }
 

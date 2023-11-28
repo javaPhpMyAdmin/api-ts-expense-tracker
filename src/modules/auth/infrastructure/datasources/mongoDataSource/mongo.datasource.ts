@@ -1,4 +1,4 @@
-import { RegisterUserDto, LoginUserDto } from '../../..';
+import { RegisterUserDto, LoginUserDto, GoogleRegisterDto } from '../../..';
 import { UserModel } from '../../../../../data/mongodb';
 import { CustomError } from '../../../../../shared/domain';
 import { User } from '../../../../users/domain';
@@ -24,30 +24,40 @@ export class MongoDataSourceImpl implements AuthDatasource {
     }
   }
 
-  async saveUser(registerUserDto: RegisterUserDto): Promise<User | null> {
-    const { email, name, address, lastname, password, phone } = registerUserDto;
-
+  async saveUser(
+    registerUserDto: RegisterUserDto | GoogleRegisterDto
+  ): Promise<User | null> {
     try {
-      const existsUser = await UserModel.findOne({ email });
+      const existsUser = await UserModel.findOne({
+        email: registerUserDto.email,
+      });
 
       if (existsUser) throw CustomError.badRequest('Impossible to save user');
 
-      //HASH THE PASSWORD
-      const passwordHashed = BcryptAdapter.hash(password);
+      //HASH THE PASSWORD IF REGISTERDTO IS AN INSTANCE OF REGISTERUSERDTO
+      let passwordHashed;
+      if (registerUserDto instanceof RegisterUserDto) {
+        passwordHashed = BcryptAdapter.hash(registerUserDto.password);
+      }
 
       const user = new UserModel({
-        email,
-        passwordHashed,
-        name,
-        lastname,
-        phone,
-        address,
+        email: registerUserDto.email,
+        passwordHashed:
+          registerUserDto instanceof RegisterUserDto
+            ? passwordHashed
+            : undefined,
+        name: registerUserDto.name,
+        lastname: registerUserDto.lastname,
+        phone: registerUserDto.phone,
+        address: registerUserDto.address,
       });
 
       await user.save();
 
       return UserMapper.userEntityFromObject(user);
     } catch (error) {
+      console.log('===== ERROR MONGO DATASOURCE - SAVING USER =====', error);
+
       if (error instanceof CustomError) {
         throw error;
       }
@@ -65,7 +75,7 @@ export class MongoDataSourceImpl implements AuthDatasource {
       //CHECK IF THE PASSWORD ARE EQUALS
       const rightPassword = BcryptAdapter.compare(
         password,
-        existsUser.passwordHashed
+        existsUser.passwordHashed!
       );
 
       //FOR A WRONG PASSWORD RETURN NULL

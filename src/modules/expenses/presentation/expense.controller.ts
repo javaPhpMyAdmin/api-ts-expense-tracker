@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import { AddExpense, GetAllExpenses, GetExpenseById } from "../aplication";
-import { AddExpenseDto } from "../domain/dtos/addExpense.dto";
-import { CustomError } from "../../../shared/domain/errors";
-import { Logger } from "../../../shared/domain/logger";
+import { Request, Response } from 'express';
+import { AddExpense, GetAllExpenses, GetExpenseById } from '../aplication';
+import { AddExpenseDto } from '../domain/dtos/addExpense.dto';
+import { CustomError } from '../../../shared/domain/errors';
+import { Logger } from '../../../shared/domain/logger';
 
 export class ExpenseController {
   constructor(
@@ -27,7 +27,6 @@ export class ExpenseController {
 
   getExpensesForUserId = (req: Request, res: Response) => {
     const userId = req.body.user.id;
-    // const userId = req.params.userId;
     this.getAllExpenses
       .getAllExpenses(userId)
       .then((expenses) => {
@@ -61,7 +60,7 @@ export class ExpenseController {
   async deleteExpense(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      res.status(200).send({ message: "Expense deleted successfully" });
+      res.status(200).send({ message: 'Expense deleted successfully' });
     } catch (e) {
       this.handleError(e, res);
     }

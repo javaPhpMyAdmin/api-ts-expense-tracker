@@ -1,13 +1,13 @@
-import { envs } from "../../../shared/infrastructure/envs";
-import { Request } from "express";
-import jwt from "jsonwebtoken";
+import { Request } from 'express';
+import jwt from 'jsonwebtoken';
+import { envs } from '../../../shared/infrastructure/envs';
 
 export class AuthUtility {
   constructor() {}
 
   async generateToken(
     payload: Object,
-    duration: string = "1h" //envs.TOKEN_EXPIRATES_IN
+    duration: string = envs.TOKEN_EXPIRATES_IN
   ): Promise<string | null> {
     return new Promise((resolve) => {
       jwt.sign(
@@ -25,7 +25,7 @@ export class AuthUtility {
 
   generateRefreshToken(
     payload: Object,
-    duration: string = "20s" //envs.TOKEN_EXPIRATES_IN
+    duration: string = envs.TOKEN_EXPIRATES_IN
   ): Promise<string | null> {
     return new Promise((resolve) => {
       jwt.sign(
@@ -53,7 +53,7 @@ export class AuthUtility {
   verifyRefreshToken<T>(token: string): Promise<T | string | null> {
     return new Promise((resolve) => {
       jwt.verify(token, envs.REFRESH_TOKEN_SECRET_KEY, (error, decoded) => {
-        if (error?.message === "jwt expired") return resolve("expired-token");
+        if (error?.message === 'jwt expired') return resolve('expired-token');
         if (error) return resolve(null);
 
         resolve(decoded as T);
@@ -64,8 +64,8 @@ export class AuthUtility {
   validateHeaders(req: Request): [string?, string?, string?] {
     const userCookie = req.cookies;
 
-    const userSession = userCookie["userSession"];
-    if (!userSession) return ["No session provided for this user"];
+    const userSession = userCookie['userSession'];
+    if (!userSession) return ['No session provided for this user'];
 
     return [undefined, userSession];
   }

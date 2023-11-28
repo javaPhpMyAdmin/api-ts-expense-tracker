@@ -1,12 +1,12 @@
-import { CustomError, ErrorMessages } from "../../../../shared/domain";
-import { NextFunction, Request, Response } from "express";
+import { CustomError, ErrorMessages } from '../../../../shared/domain';
+import { NextFunction, Request, Response } from 'express';
 import {
   ValidateTokenUseCase,
   GetUserByEmail,
-} from "../../../../modules/auth/aplication/useCases";
-import { AuthUtility } from "../../../../modules/auth/utils";
-import { UserEmailDto } from "../../../../modules/users/domain";
-import { UserToMiddleware } from "../mappers";
+} from '../../../../modules/auth/aplication/useCases';
+import { AuthUtility } from '../../../../modules/auth/utils';
+import { UserEmailDto } from '../../../../modules/users/domain';
+import { UserToMiddleware } from '../mappers';
 
 export class AuthMiddleware {
   constructor(
@@ -23,7 +23,7 @@ export class AuthMiddleware {
 
       if (!payload)
         return res.status(403).json({
-          error: CustomError.forbidden(`${ErrorMessages.FORBIDDEN} 2023`),
+          error: CustomError.forbidden(`${ErrorMessages.FORBIDDEN}`),
         });
 
       const [error, emailDto] = UserEmailDto.execute(payload?.userEmail)!;
@@ -37,7 +37,7 @@ export class AuthMiddleware {
 
       if (!user)
         return res.status(401).json({
-          error: CustomError.unauthorized(`${ErrorMessages.UNAUTHORIZED} 2023`),
+          error: CustomError.unauthorized(`${ErrorMessages.UNAUTHORIZED}`),
         });
 
       //AQUI PODRIA AL OBTENER EL USER JUGAR CON ALGUNA PROPIEDAD PARA INVALIDAR SU TOKEN

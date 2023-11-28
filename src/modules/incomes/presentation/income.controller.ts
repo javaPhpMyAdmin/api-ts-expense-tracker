@@ -1,9 +1,8 @@
-import { Request, Response } from "express";
-import { AddIncome, GetAllIncomes, GetIncomeById } from "../aplication";
-import { AddIncomeDto } from "../domain/dtos/addIncome.dto";
-import { CustomError } from "../../../shared/domain/errors";
-import { Logger } from "../../../shared/domain/logger";
-import { User } from "modules/users/domain";
+import { Request, Response } from 'express';
+import { AddIncome, GetAllIncomes, GetIncomeById } from '../aplication';
+import { AddIncomeDto } from '../domain/dtos/addIncome.dto';
+import { CustomError } from '../../../shared/domain/errors';
+import { Logger } from '../../../shared/domain/logger';
 export class IncomeController {
   constructor(
     private readonly getAllIncomes: GetAllIncomes,
@@ -26,9 +25,7 @@ export class IncomeController {
   };
 
   getIncomesForUserId = (req: Request, res: Response) => {
-    console.log("USER MIDDLEWARE", req.body.user);
     const userId = req.body.user.id;
-    // const userId = req.params.userId;
     this.getAllIncomes
       .getAllIncomes(userId)
       .then((incomes) => {
@@ -52,7 +49,7 @@ export class IncomeController {
     if (error) return res.status(400).send({ error: error });
 
     const userId = req.body.user.id;
-    console.log("USER ID", userId);
+    console.log('USER ID', userId);
 
     this.addIncome
       .registerIncome(addIncomeDto!, userId)
@@ -63,7 +60,7 @@ export class IncomeController {
   async deleteIncome(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      res.status(200).send({ message: "Income deleted successfully" });
+      res.status(200).send({ message: 'Income deleted successfully' });
     } catch (e) {
       this.handleError(e, res);
     }

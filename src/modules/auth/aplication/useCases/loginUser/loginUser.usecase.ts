@@ -1,9 +1,9 @@
-import { LoginUserDto, User } from "../../../../../modules/users/domain";
-import { CustomError, Logger } from "../../../../../shared/domain";
-import { AuthUtility } from "../../../utils";
-import { AuthRepository } from "../../..";
+import { LoginUserDto, User } from '../../../../../modules/users/domain';
+import { CustomError, Logger } from '../../../../../shared/domain';
+import { AuthUtility } from '../../../utils';
+import { AuthRepository } from '../../..';
 
-const useCase = "[Use case - LoginUser]";
+const useCase = '[Use case - LoginUser]';
 export class LoginUserUseCase {
   constructor(
     private readonly authUtility: AuthUtility,
@@ -11,7 +11,7 @@ export class LoginUserUseCase {
     private readonly logger: Logger
   ) {}
 
-  async loginUser(loginUserDto: LoginUserDto): Promise<
+  async run(loginUserDto: LoginUserDto): Promise<
     | {
         userAuthenticated: User;
         accessToken: string | null;
@@ -49,7 +49,7 @@ export class LoginUserUseCase {
         this.logger.error(`${useCase} - ${error.message}`);
         throw error;
       }
-      throw CustomError.internalServer("LOGIN USER USE CASE");
+      throw CustomError.internalServer('LOGIN USER USE CASE');
     }
   }
 }

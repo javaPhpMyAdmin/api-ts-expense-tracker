@@ -8,7 +8,7 @@ const userSchema = new Schema({
   },
   passwordHashed: {
     type: String,
-    required: [true, 'Password is required'],
+    required: false,
   },
   name: {
     type: String,
@@ -20,11 +20,11 @@ const userSchema = new Schema({
   },
   phone: {
     type: Number,
-    required: [true, 'Phone is required'],
+    required: false,
   },
   address: {
     type: String,
-    required: [true, 'Address is required'],
+    required: false,
   },
 });
 

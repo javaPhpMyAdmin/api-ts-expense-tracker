@@ -1,8 +1,8 @@
-import { AuthUtility } from "../../../modules/auth/utils";
-import { ValidateTokenUseCase } from "../aplication/useCases/validateToken";
-import { AuthMiddleware } from "../presentation/middlewares";
-import { GetUserByEmail } from "../aplication/useCases/getUser";
-import { AuthController } from "../presentation";
+import { AuthUtility } from '../../../modules/auth/utils';
+import { ValidateTokenUseCase } from '../aplication/useCases/validateToken';
+import { AuthMiddleware } from '../presentation/middlewares';
+import { GetUserByEmail } from '../aplication/useCases/getUser';
+import { AuthController } from '../presentation';
 import {
   AuthRepositoryImpl,
   LoginUserUseCase,
@@ -10,8 +10,10 @@ import {
   MongoDataSourceImpl,
   RegisterUserUseCase,
   RefreshTokenUseCase,
-} from "..";
-import { ConsoleLogger } from "../../../shared/infrastructure";
+  GoogleLoginUseCase,
+  LogoutUserUseCase,
+} from '..';
+import { ConsoleLogger } from '../../../shared/infrastructure';
 
 //UTILITY FOR AUTHENTICATION
 const authUtility = new AuthUtility();
@@ -54,9 +56,21 @@ const registerUser = new RegisterUserUseCase(
 //LOGIN USER USE CASE
 const loginUser = new LoginUserUseCase(authUtility, authRepository, logger);
 
+//GOOGLE LOGIN USER USE CASE
+const googleLoginUser = new GoogleLoginUseCase(
+  logger,
+  authRepository,
+  authUtility
+);
+
+//LOGOUT USER USE CASE
+const logoutUser = new LogoutUserUseCase(logger);
+
 //AUTH CONTROLLER INSTANCE
 export const authController = new AuthController(
   loginUser,
   registerUser,
-  refreshToken
+  refreshToken,
+  googleLoginUser,
+  logoutUser
 );

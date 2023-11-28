@@ -1,18 +1,22 @@
-import { Request, Response } from "express";
-import { LoginUserDto, RegisterUserDto } from "../domain/dtos";
+import { Request, Response } from 'express';
+import { LoginUserDto, RegisterUserDto } from '../domain/dtos';
 import {
   LoginUserUseCase,
+  LogoutUserUseCase,
   RefreshTokenUseCase,
   RegisterUserUseCase,
-} from "../aplication/useCases";
-import { CustomError, ErrorMessages } from "../../../shared/domain";
-import { MakeCookie } from "../utils";
+} from '../aplication/useCases';
+import { CustomError, ErrorMessages } from '../../../shared/domain';
+import { MakeCookie } from '../utils';
+import { GoogleLoginUseCase } from '../aplication/useCases/googleLogin';
 
 export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
-    private readonly refreshTokenUseCase: RefreshTokenUseCase
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
+    private readonly googleLoginUseCase: GoogleLoginUseCase,
+    private readonly logoutUseCase: LogoutUserUseCase
   ) {}
 
   private handleError = (error: unknown, res: Response) => {
@@ -41,9 +45,10 @@ export class AuthController {
               ErrorMessages.IMPOSSIBLE_REGISTER_USER
             ),
           });
+        const customRes = MakeCookie.create(req, res, response?.refreshToken!);
         res.json({
+          status: 'ok',
           user: response?.userRegistered,
-          refreshToken: response?.refreshToken,
         });
       })
       .catch((e) => this.handleError(e, res));
@@ -55,16 +60,42 @@ export class AuthController {
     if (error) return res.status(400).send({ error });
 
     this.loginUserUseCase
-      .loginUser(loginUserDto!)
+      .run(loginUserDto!)
       .then((response) => {
         if (!response?.userAuthenticated)
           return res.status(401).json({
             error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
           });
 
-        const customRes = MakeCookie.create(res, response?.refreshToken!);
+        const customRes = MakeCookie.create(req, res, response?.refreshToken!);
         customRes.status(200).json({
+          status: 'ok',
           user: response?.userAuthenticated,
+        });
+      })
+      .catch((e) => this.handleError(e, res));
+  }
+
+  googleAuthUser(req: Request, res: Response) {
+    const googleToken = req.body.token;
+
+    if (!googleToken)
+      return res
+        .status(401)
+        .json({ error: 'No token for googleAuth provided' });
+
+    this.googleLoginUseCase
+      .run(googleToken)
+      .then((response) => {
+        if (!response?.user)
+          return res.status(401).json({
+            error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
+          });
+
+        const customRes = MakeCookie.create(req, res, response?.refreshToken!);
+        customRes.status(200).json({
+          status: 'ok',
+          user: response?.user,
         });
       })
       .catch((e) => this.handleError(e, res));
@@ -75,16 +106,16 @@ export class AuthController {
     if (!userSession) return res.status(204);
 
     this.refreshTokenUseCase
-      .execute(userSession)
+      .run(userSession)
       .then((response) => {
         if (!response?.refreshToken || !response)
           return res.status(401).json({
             error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
           });
 
-        const customRes = MakeCookie.create(res, response?.refreshToken);
+        const customRes = MakeCookie.create(req, res, response?.refreshToken);
         customRes.status(200).json({
-          message: "Token has been refreshed",
+          message: 'Token has been refreshed',
           token: response?.refreshToken,
         });
       })
@@ -93,14 +124,15 @@ export class AuthController {
 
   logout(req: Request, res: Response) {
     const userSession = req.cookies.userSession;
-    if (!userSession) return res.status(204);
 
-    res.clearCookie("userSession", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
+    if (userSession === undefined)
+      return res.status(204).json({ error: 'There is not cookies to clear' });
 
-    res.status(200).json({ message: "Cookie cleared" });
+    //JUST IN CASE IF I WANNA SAVE SOMETHING FROM SESSION IN THE DB THAT IS THE REASON FOR THE LOGOUT USE CASE
+    const customResponse = this.logoutUseCase.run(res);
+
+    customResponse
+      .status(201)
+      .json({ status: 'ok', message: 'Cookie cleared' });
   }
 }
