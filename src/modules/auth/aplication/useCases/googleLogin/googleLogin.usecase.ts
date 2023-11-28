@@ -3,12 +3,12 @@ import {
   AuthUtility,
   GoogleAuth,
   GoogleRegisterDto,
-} from '../../..';
-import { CustomError } from '../../../../../shared/domain';
-import { ConsoleLogger } from '../../../../../shared/infrastructure';
-import { User } from '../../../../users/domain';
+} from "../../..";
+import { CustomError } from "../../../../../shared/domain";
+import { ConsoleLogger } from "../../../../../shared/infrastructure";
+import { User } from "../../../../users/domain";
 
-const useCase = '[Use case - GoogleLoginUser]';
+const useCase = "[Use case - GoogleLoginUser]";
 
 export class GoogleLoginUseCase {
   constructor(
@@ -19,15 +19,16 @@ export class GoogleLoginUseCase {
 
   async run(
     googleToken: string
-  ): Promise<{ user: User; refreshToken: string | null } | null> {
+  ): Promise<{ user: User | null; refreshToken: string | null } | null> {
     try {
       const ticket = await GoogleAuth.verifyToken(googleToken);
       const payload = GoogleAuth.getPayload(ticket);
 
-      console.log('====== PAYLOAD FROM GOOGLE AUTHENTICATION ======', payload);
-
+      console.log("====== PAYLOAD FROM GOOGLE AUTHENTICATION ======", payload);
+      //VERIFY IF THERE IS A USER IN THE DB
       let user = await this.authRepository.getUser(payload?.email!);
 
+      //IF NO EXIST A USER WITH THIS EMAIL, CREATE A NEW USER AND RETURN IT
       if (!user) {
         const lastname = payload?.name; //TODO: APPLY SOME LOGIC TO GET LASTNAME FROM NAME
 
@@ -39,26 +40,26 @@ export class GoogleLoginUseCase {
 
         if (error) throw CustomError.badRequest(error);
 
-        user = await this.authRepository.saveUser(registerUserDto!);
+        //user = await this.authRepository.saveUser(registerUserDto!);
       }
 
-      if (!user) return null;
+      //if (!user) return null;
 
-      const refreshToken = await this.authUtility.generateRefreshToken({
-        userId: user?.getId,
-        userEmail: user?.getEmail,
-        userName: user?.getName,
-      });
+      // const refreshToken = await this.authUtility.generateRefreshToken({
+      //   userId: user?.getId,
+      //   userEmail: user?.getEmail,
+      //   userName: user?.getName,
+      // });
 
       this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
-      return { user, refreshToken };
+      return { user, refreshToken: null };
     } catch (error) {
       if (error instanceof CustomError) {
-        console.log('===== ERROR GOOGLE - LOGIN USE CASE =====', error);
+        console.log("===== ERROR GOOGLE - LOGIN USE CASE =====", error);
         this.logger.error(`${useCase} - ${error.message}`);
         throw error;
       }
-      throw CustomError.internalServer('GOOGLE LOGIN USER USE CASE');
+      throw CustomError.internalServer("GOOGLE LOGIN USER USE CASE");
     }
   }
 }
