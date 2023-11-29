@@ -8,7 +8,7 @@ import { CustomError } from "../../../../../shared/domain";
 import { ConsoleLogger } from "../../../../../shared/infrastructure";
 import { User } from "../../../../users/domain";
 
-const useCase = "[Use case - GoogleLoginUser]";
+const useCase = "[USE CASE - GoogleLoginUser]";
 
 export class GoogleLoginUseCase {
   constructor(

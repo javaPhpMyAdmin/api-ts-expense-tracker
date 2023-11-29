@@ -31,7 +31,9 @@
   },
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.5",
+    "@types/multer": "^1.4.11",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.41.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -44,6 +46,7 @@
     "module-alias": "^2.2.3",
     "mongodb": "^6.2.0",
     "mongoose": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
     "pino": "^8.16.1",
     "pino-pretty": "^10.2.3"
   }

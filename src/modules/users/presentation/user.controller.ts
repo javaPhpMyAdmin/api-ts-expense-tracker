@@ -6,10 +6,12 @@ import {
   GetAllUsers,
   GetUserByEmail,
   UpdateUser,
+  UploadProfileImage,
 } from "../aplication/useCases";
 
 export class UserController {
   constructor(
+    private readonly uploadProfileImageUseCase: UploadProfileImage,
     private readonly getAllUsersUseCase: GetAllUsers,
     private readonly getUserByEmailUseCase: GetUserByEmail,
     private readonly updateUserUseCase: UpdateUser,
@@ -70,6 +72,18 @@ export class UserController {
     this.getAllUsersUseCase
       .getAllUser()
       .then((users) => res.status(200).json(users))
+      .catch((e) => {
+        this.handleError(e, res);
+      });
+  }
+
+  uploadImageProfile(req: Request, res: Response) {
+    const userId = req.body.user.id;
+    const imageProfile = req.file;
+
+    this.uploadProfileImageUseCase
+      .run(imageProfile, userId)
+      .then((response) => res.status(200).json(response))
       .catch((e) => {
         this.handleError(e, res);
       });

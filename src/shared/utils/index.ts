@@ -1,1 +1,1 @@
-export * from '../../modules/users/utils/bcryptAdapter.util';
+export * from "./cloudinary.util";

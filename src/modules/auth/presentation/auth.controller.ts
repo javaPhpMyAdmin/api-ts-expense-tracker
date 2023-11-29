@@ -1,14 +1,14 @@
-import { Request, Response } from 'express';
-import { LoginUserDto, RegisterUserDto } from '../domain/dtos';
+import { Request, Response } from "express";
+import { LoginUserDto, RegisterUserDto } from "../domain/dtos";
 import {
   LoginUserUseCase,
   LogoutUserUseCase,
   RefreshTokenUseCase,
   RegisterUserUseCase,
-} from '../aplication/useCases';
-import { CustomError, ErrorMessages } from '../../../shared/domain';
-import { MakeCookie } from '../utils';
-import { GoogleLoginUseCase } from '../aplication/useCases/googleLogin';
+} from "../aplication/useCases";
+import { CustomError, ErrorMessages } from "../../../shared/domain";
+import { MakeCookie } from "../utils";
+import { GoogleLoginUseCase } from "../aplication/useCases/googleLogin";
 
 export class AuthController {
   constructor(
@@ -47,7 +47,7 @@ export class AuthController {
           });
         const customRes = MakeCookie.create(req, res, response?.refreshToken!);
         res.json({
-          status: 'ok',
+          status: "ok",
           user: response?.userRegistered,
         });
       })
@@ -69,7 +69,7 @@ export class AuthController {
 
         const customRes = MakeCookie.create(req, res, response?.refreshToken!);
         customRes.status(200).json({
-          status: 'ok',
+          status: "ok",
           user: response?.userAuthenticated,
         });
       })
@@ -82,7 +82,7 @@ export class AuthController {
     if (!googleToken)
       return res
         .status(401)
-        .json({ error: 'No token for googleAuth provided' });
+        .json({ error: "No token for googleAuth provided" });
 
     this.googleLoginUseCase
       .run(googleToken)
@@ -94,7 +94,7 @@ export class AuthController {
 
         const customRes = MakeCookie.create(req, res, response?.refreshToken!);
         customRes.status(200).json({
-          status: 'ok',
+          status: "ok",
           user: response?.user,
         });
       })
@@ -115,7 +115,7 @@ export class AuthController {
 
         const customRes = MakeCookie.create(req, res, response?.refreshToken);
         customRes.status(200).json({
-          message: 'Token has been refreshed',
+          message: "Token has been refreshed",
           token: response?.refreshToken,
         });
       })
@@ -126,13 +126,13 @@ export class AuthController {
     const userSession = req.cookies.userSession;
 
     if (userSession === undefined)
-      return res.status(204).json({ error: 'There is not cookies to clear' });
+      return res.status(204).json({ error: "There is not cookies to clear" });
 
     //JUST IN CASE IF I WANNA SAVE SOMETHING FROM SESSION IN THE DB THAT IS THE REASON FOR THE LOGOUT USE CASE
     const customResponse = this.logoutUseCase.run(res);
 
     customResponse
       .status(201)
-      .json({ status: 'ok', message: 'Cookie cleared' });
+      .json({ status: "ok", message: "Cookie cleared" });
   }
 }

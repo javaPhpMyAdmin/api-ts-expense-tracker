@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { userController } from "../infrastructure/dependencies";
+import { multerMiddleware } from "../../../shared/infrastructure";
 
 export class UserRoutes {
   static get routes(): Router {
@@ -23,6 +24,12 @@ export class UserRoutes {
     userRouter.put(
       "/update-user/:userId",
       userController.updateUser.bind(userController)
+    );
+
+    userRouter.post(
+      "/upload-image-profile",
+      multerMiddleware.upload(),
+      userController.uploadImageProfile.bind(userController)
     );
 
     return userRouter;
