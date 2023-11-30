@@ -31,4 +31,10 @@ export class MockDataSourceImpl implements UserDataSource {
   saveRefreshToken(email: string, accessToken: string): Promise<User | null> {
     throw new Error("Method not implemented.");
   }
+  saveUserImage(
+    emailValidated: string,
+    userImage: string
+  ): Promise<User | null> {
+    throw new Error("Method not implemented.");
+  }
 }

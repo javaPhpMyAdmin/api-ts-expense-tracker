@@ -6,7 +6,8 @@ export class User {
     private readonly name: string,
     private readonly lastname: string,
     private readonly phone: number,
-    private readonly address: string
+    private readonly address: string,
+    private readonly imageProfile?: string
   ) {}
   public get getId(): string {
     return this.id;
@@ -28,5 +29,9 @@ export class User {
   }
   public get getAddress(): string {
     return this.address;
+  }
+
+  public get getImageProfile(): string {
+    return this.imageProfile!;
   }
 }

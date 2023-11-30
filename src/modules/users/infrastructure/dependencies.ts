@@ -1,9 +1,13 @@
-import { ConsoleLogger } from "../../../shared/infrastructure";
+import {
+  ConsoleLogger,
+  cloudinaryUtility,
+} from "../../../shared/infrastructure";
 import {
   GetAllUsers,
   GetUserByEmail,
   UpdateUser,
   DeleteUser,
+  UploadProfileImage,
 } from "../aplication";
 import { UserController } from "../presentation";
 import { MockDataSourceImpl, MongoDataSourceImpl } from "./datasources";
@@ -32,8 +36,16 @@ const updateUserUseCase = new UpdateUser(userRepository, logger);
 //DELETE USER USECASE
 const deleteUserUseCase = new DeleteUser(userRepository, logger);
 
+//UPLOAD USER IMAGE
+const uploadImageUseCase = new UploadProfileImage(
+  cloudinaryUtility,
+  userRepository,
+  logger
+);
+
 //USER CONTROLLER INSTANCE
 export const userController = new UserController(
+  uploadImageUseCase,
   getAllUsersUseCase,
   getUserByEmailUseCase,
   updateUserUseCase,

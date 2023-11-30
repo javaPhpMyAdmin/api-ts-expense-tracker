@@ -1,12 +1,12 @@
-import { CustomError, ErrorMessages } from '../../../../shared/domain';
-import { NextFunction, Request, Response } from 'express';
+import { CustomError, ErrorMessages } from "../../../../shared/domain";
+import { NextFunction, Request, Response } from "express";
 import {
   ValidateTokenUseCase,
   GetUserByEmail,
-} from '../../../../modules/auth/aplication/useCases';
-import { AuthUtility } from '../../../../modules/auth/utils';
-import { UserEmailDto } from '../../../../modules/users/domain';
-import { UserToMiddleware } from '../mappers';
+} from "../../../../modules/auth/aplication/useCases";
+import { AuthUtility } from "../../../../modules/auth/utils";
+import { UserEmailDto } from "../../../../modules/users/domain";
+import { UserToMiddleware } from "../mappers";
 
 export class AuthMiddleware {
   constructor(

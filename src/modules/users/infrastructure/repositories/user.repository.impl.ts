@@ -1,5 +1,6 @@
 import { UserDataSource, UserDto, UserRepository, User } from "../../domain";
 import { CustomError } from "../../../../shared/domain";
+import { endianness } from "os";
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly userDataSource: UserDataSource) {}
@@ -50,6 +51,25 @@ export class UserRepositoryImpl implements UserRepository {
       const users = await this.userDataSource.getAllUsers();
       if (!users) return [];
       return users;
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
+  }
+
+  async saveUserImage(
+    emailValidated: string,
+    userImage: string
+  ): Promise<User | null> {
+    try {
+      const user = await this.userDataSource.saveUserImage(
+        emailValidated,
+        userImage
+      );
+      if (!user) return null;
+      return user;
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

@@ -22,6 +22,7 @@ export class GoogleLoginUseCase {
   ): Promise<{ user: User | null; refreshToken: string | null } | null> {
     try {
       const ticket = await GoogleAuth.verifyToken(googleToken);
+      console.log("TIKET GOOGLE AUTH", ticket);
       const payload = GoogleAuth.getPayload(ticket);
 
       console.log("====== PAYLOAD FROM GOOGLE AUTHENTICATION ======", payload);
@@ -54,6 +55,8 @@ export class GoogleLoginUseCase {
       this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
       return { user, refreshToken: null };
     } catch (error) {
+      console.log("ERROR GOOGLE LOGIN USE CASE", error);
+
       if (error instanceof CustomError) {
         console.log("===== ERROR GOOGLE - LOGIN USE CASE =====", error);
         this.logger.error(`${useCase} - ${error.message}`);

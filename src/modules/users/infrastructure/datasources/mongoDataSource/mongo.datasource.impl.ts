@@ -40,4 +40,27 @@ export class MongoDataSourceImpl implements UserDataSource {
       throw CustomError.internalServer();
     }
   }
+
+  async saveUserImage(
+    emailValidated: string,
+    userImage: string
+  ): Promise<User | null> {
+    try {
+      const user = await UserModel.findOne({
+        email: emailValidated,
+      });
+      if (!user) return null;
+      user.imageProfile = userImage;
+
+      const userImageUpdated = await user.save();
+      if (!userImageUpdated) return null;
+
+      return UserMapper.userEntityFromObject(userImageUpdated);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
+  }
 }

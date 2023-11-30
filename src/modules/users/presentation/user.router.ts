@@ -1,6 +1,7 @@
-import { Router } from "express";
+import { NextFunction, Request, Router } from "express";
 import { userController } from "../infrastructure/dependencies";
 import { multerMiddleware } from "../../../shared/infrastructure";
+import { MulterMiddleware } from "../../../shared/presentation/middlewares";
 
 export class UserRoutes {
   static get routes(): Router {

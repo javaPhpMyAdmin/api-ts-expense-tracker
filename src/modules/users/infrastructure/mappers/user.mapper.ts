@@ -14,6 +14,7 @@ export class UserMapper {
       lastname: lastnameFromDb,
       phone: phoneFromDb,
       address: addressFromDb,
+      imageProfile: imageProfileFromDb,
     } = object;
 
     const [error, userFromDbToResDto] = UserFromDb.create({
@@ -22,11 +23,13 @@ export class UserMapper {
       addressFromDb,
       phoneFromDb,
       lastnameFromDb,
+      imageProfileFromDb,
     });
 
     if (error) throw CustomError.badRequest(error);
 
-    const { email, name, address, lastname, phone } = userFromDbToResDto!;
+    const { email, name, address, lastname, phone, imageProfile } =
+      userFromDbToResDto!;
 
     return new User(
       object._id || object.id,
@@ -35,7 +38,8 @@ export class UserMapper {
       name,
       lastname,
       phone,
-      address
+      address,
+      imageProfile
     );
   }
 }

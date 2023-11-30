@@ -1,5 +1,5 @@
-import { LoginTicket, OAuth2Client, TokenPayload } from 'google-auth-library';
-import { envs } from '../../../shared/infrastructure/envs';
+import { LoginTicket, OAuth2Client, TokenPayload } from "google-auth-library";
+import { envs } from "../../../shared/infrastructure/envs";
 
 export class GoogleAuth {
   constructor() {}

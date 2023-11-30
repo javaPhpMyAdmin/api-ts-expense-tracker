@@ -2,7 +2,9 @@ import "../../../shared/infrastructure/envs/load-env-vars";
 const API_VERSION_PREFIX = "/api/v1";
 const API_VERSION_PREFIX_AUTH = `${API_VERSION_PREFIX}/auth`;
 import { get } from "env-var";
-
+// CLOUDINARY_CLOUD_NAME=dh27sb79z
+// CLOUDINARY_API_KEY=529682691964224
+// CLOUDINARY_API_SECRET=2vkTIbb9BEM65Aqj7Up5PRgnk0E
 export const envs = {
   PORT: get("PORT").required().asPortNumber(),
   MONGO_URL: get("MONGO_URL").required().asString(),

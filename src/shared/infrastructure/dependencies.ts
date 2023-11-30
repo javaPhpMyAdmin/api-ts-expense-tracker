@@ -7,10 +7,11 @@ import {
   MulterMiddleware,
 } from "../presentation/middlewares";
 import { ConsoleLogger } from "./logger";
-import { FileFilterCallback } from "multer";
+import { CloudinaryUtility } from "../utils";
 
 //EXPORT A LOGGER INSTANCE
 export const logger = new ConsoleLogger();
 export const loggerMiddleware = new LoggerMiddleware(logger);
 export const httpRouter = new HTTPRouter();
 export const multerMiddleware = new MulterMiddleware();
+export const cloudinaryUtility = new CloudinaryUtility();

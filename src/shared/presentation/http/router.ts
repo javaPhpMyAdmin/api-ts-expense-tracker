@@ -34,6 +34,7 @@ export class HTTPRouter {
 
     //NOT FOUND ROUTES
     app.use("/", (req, res) => {
+      //TODO: IMPLEMENT A BETTER HANDLE OF NOT FOUND ROUTE
       res.status(200).send("IT WORKS");
     });
   }

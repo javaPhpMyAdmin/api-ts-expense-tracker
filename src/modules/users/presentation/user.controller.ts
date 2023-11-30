@@ -69,6 +69,8 @@ export class UserController {
   }
 
   getAllUsers(req: Request, res: Response) {
+    const userId = req.body.user;
+
     this.getAllUsersUseCase
       .getAllUser()
       .then((users) => res.status(200).json(users))
@@ -78,11 +80,16 @@ export class UserController {
   }
 
   uploadImageProfile(req: Request, res: Response) {
-    const userId = req.body.user.id;
+    const userEmail = req.body.userEmail;
     const imageProfile = req.file;
+    const [error, emailDto] = UserEmailDto.execute(userEmail);
+
+    if (imageProfile === undefined)
+      res.status(400).json("Invalid image provided");
+    if (error) res.status(400).json(error);
 
     this.uploadProfileImageUseCase
-      .run(imageProfile, userId)
+      .run(imageProfile, emailDto?.email!)
       .then((response) => res.status(200).json(response))
       .catch((e) => {
         this.handleError(e, res);

@@ -1,10 +1,10 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema({
   email: {
     type: String,
     unique: true,
-    required: [true, 'Email is required'],
+    required: [true, "Email is required"],
   },
   passwordHashed: {
     type: String,
@@ -12,11 +12,11 @@ const userSchema = new Schema({
   },
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, "Name is required"],
   },
   lastname: {
     type: String,
-    required: [true, 'Lastname is required'],
+    required: [true, "Lastname is required"],
   },
   phone: {
     type: Number,
@@ -26,9 +26,12 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  imageProfile: {
+    type: String,
+  },
 });
 
-userSchema.set('toJSON', {
+userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject.__v;
@@ -36,4 +39,4 @@ userSchema.set('toJSON', {
   },
 });
 
-export const UserModel = mongoose.model('User', userSchema);
+export const UserModel = mongoose.model("User", userSchema);

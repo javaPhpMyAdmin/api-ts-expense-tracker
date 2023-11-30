@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request } from "express";
 import multer, { FileFilterCallback, Multer } from "multer";
 
 export class MulterMiddleware {
@@ -8,7 +8,7 @@ export class MulterMiddleware {
   constructor() {
     this.storage = multer.diskStorage({
       destination: function (req, file, cb) {
-        cb(null, "/uploads");
+        cb(null, "./uploads");
       },
       filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -28,8 +28,8 @@ export class MulterMiddleware {
     };
   }
 
-  public upload(): ReturnType<Multer["single"]> {
-    return multer({ storage: this.storage }).single("profileImage");
+  upload(next?: NextFunction): ReturnType<Multer["single"]> {
+    return multer({ storage: this.storage }).single("imageProfile");
   }
 
   public setFilter(filterFunction: FileFilterCallback): void {
