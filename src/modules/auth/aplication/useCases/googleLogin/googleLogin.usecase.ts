@@ -1,3 +1,4 @@
+import { envs } from "../../../../../shared/infrastructure/envs";
 import {
   AuthRepository,
   AuthUtility,
@@ -7,6 +8,12 @@ import {
 import { CustomError } from "../../../../../shared/domain";
 import { ConsoleLogger } from "../../../../../shared/infrastructure";
 import { User } from "../../../../users/domain";
+import {
+  LoginTicket,
+  OAuth2Client,
+  TokenPayload,
+  VerifyIdTokenOptions,
+} from "google-auth-library";
 
 const useCase = "[USE CASE - GoogleLoginUser]";
 
@@ -21,28 +28,36 @@ export class GoogleLoginUseCase {
     googleToken: string
   ): Promise<{ user: User | null; refreshToken: string | null } | null> {
     try {
-      const ticket = await GoogleAuth.verifyToken(googleToken);
-      console.log("TIKET GOOGLE AUTH", ticket);
-      const payload = GoogleAuth.getPayload(ticket);
+      // const googleClient = new OAuth2Client();
+      // const ticket = await googleClient.verifyIdToken({
+      //   idToken: googleToken,
+      //   audience: envs.GOOGLE_CLIENT_ID,
+      // });
+      const ticket2 = await GoogleAuth.verifyToken(googleToken);
+      // console.log("TICKET 2", ticket2);
 
-      console.log("====== PAYLOAD FROM GOOGLE AUTHENTICATION ======", payload);
-      //VERIFY IF THERE IS A USER IN THE DB
-      let user = await this.authRepository.getUser(payload?.email!);
+      const ticket = "";
+      // console.log("TIKET GOOGLE AUTH", ticket);
+      // const payload = GoogleAuth.getPayload(ticket);
 
-      //IF NO EXIST A USER WITH THIS EMAIL, CREATE A NEW USER AND RETURN IT
-      if (!user) {
-        const lastname = payload?.name; //TODO: APPLY SOME LOGIC TO GET LASTNAME FROM NAME
+      // console.log("====== PAYLOAD FROM GOOGLE AUTHENTICATION ======", payload);
+      // //VERIFY IF THERE IS A USER IN THE DB
+      // let user = await this.authRepository.getUser(payload?.email!);
 
-        const [error, registerUserDto] = GoogleRegisterDto.create({
-          email: payload?.email,
-          name: payload?.name,
-          lastname,
-        });
+      // //IF NO EXIST A USER WITH THIS EMAIL, CREATE A NEW USER AND RETURN IT
+      // if (!user) {
+      //   const lastname = payload?.name; //TODO: APPLY SOME LOGIC TO GET LASTNAME FROM NAME
 
-        if (error) throw CustomError.badRequest(error);
+      //   const [error, registerUserDto] = GoogleRegisterDto.create({
+      //     email: payload?.email,
+      //     name: payload?.name,
+      //     lastname,
+      //   });
 
-        //user = await this.authRepository.saveUser(registerUserDto!);
-      }
+      //   if (error) throw CustomError.badRequest(error);
+
+      //user = await this.authRepository.saveUser(registerUserDto!);
+      // }
 
       //if (!user) return null;
 
@@ -52,8 +67,8 @@ export class GoogleLoginUseCase {
       //   userName: user?.getName,
       // });
 
-      this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
-      return { user, refreshToken: null };
+      // this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
+      return { user: null, refreshToken: null };
     } catch (error) {
       console.log("ERROR GOOGLE LOGIN USE CASE", error);
 

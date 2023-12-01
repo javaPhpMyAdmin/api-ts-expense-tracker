@@ -48,6 +48,7 @@
     "mongoose": "^8.0.0",
     "multer": "^1.4.5-lts.1",
     "pino": "^8.16.1",
-    "pino-pretty": "^10.2.3"
+    "pino-pretty": "^10.2.3",
+    "query-string": "^8.1.0"
   }
 }
