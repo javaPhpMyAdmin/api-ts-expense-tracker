@@ -1,21 +1,21 @@
-import { envs } from "../../../../../shared/infrastructure/envs";
+import { envs } from '../../../../../shared/infrastructure/envs';
 import {
   AuthRepository,
   AuthUtility,
   GoogleAuth,
   GoogleRegisterDto,
-} from "../../..";
-import { CustomError } from "../../../../../shared/domain";
-import { ConsoleLogger } from "../../../../../shared/infrastructure";
-import { User } from "../../../../users/domain";
+} from '../../..';
+import { CustomError } from '../../../../../shared/domain';
+import { ConsoleLogger } from '../../../../../shared/infrastructure';
+import { User } from '../../../../users/domain';
 import {
   LoginTicket,
   OAuth2Client,
   TokenPayload,
   VerifyIdTokenOptions,
-} from "google-auth-library";
+} from 'google-auth-library';
 
-const useCase = "[USE CASE - GoogleLoginUser]";
+const useCase = '[USE CASE - GoogleLoginUser]';
 
 export class GoogleLoginUseCase {
   constructor(
@@ -28,19 +28,12 @@ export class GoogleLoginUseCase {
     googleToken: string
   ): Promise<{ user: User | null; refreshToken: string | null } | null> {
     try {
-      // const googleClient = new OAuth2Client();
-      // const ticket = await googleClient.verifyIdToken({
-      //   idToken: googleToken,
-      //   audience: envs.GOOGLE_CLIENT_ID,
-      // });
-      const ticket2 = await GoogleAuth.verifyToken(googleToken);
-      // console.log("TICKET 2", ticket2);
+      const ticket = await GoogleAuth.verifyToken(googleToken);
 
-      const ticket = "";
-      // console.log("TIKET GOOGLE AUTH", ticket);
-      // const payload = GoogleAuth.getPayload(ticket);
+      console.log('TIKET GOOGLE AUTH', ticket);
+      const payload = GoogleAuth.getPayload(ticket);
 
-      // console.log("====== PAYLOAD FROM GOOGLE AUTHENTICATION ======", payload);
+      console.log('====== PAYLOAD FROM GOOGLE AUTHENTICATION ======', payload);
       // //VERIFY IF THERE IS A USER IN THE DB
       // let user = await this.authRepository.getUser(payload?.email!);
 
@@ -70,14 +63,14 @@ export class GoogleLoginUseCase {
       // this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
       return { user: null, refreshToken: null };
     } catch (error) {
-      console.log("ERROR GOOGLE LOGIN USE CASE", error);
+      console.log('ERROR GOOGLE LOGIN USE CASE', error);
 
       if (error instanceof CustomError) {
-        console.log("===== ERROR GOOGLE - LOGIN USE CASE =====", error);
+        console.log('===== ERROR GOOGLE - LOGIN USE CASE =====', error);
         this.logger.error(`${useCase} - ${error.message}`);
         throw error;
       }
-      throw CustomError.internalServer("GOOGLE LOGIN USER USE CASE");
+      throw CustomError.internalServer('GOOGLE LOGIN USER USE CASE');
     }
   }
 }

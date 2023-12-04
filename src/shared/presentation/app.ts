@@ -6,7 +6,6 @@ import { Application } from 'express';
 import { envs } from '../infrastructure/envs';
 import { Server } from 'http';
 import { httpRouter, logger } from '../../shared/infrastructure/dependencies';
-
 export class App {
   private server?: Server;
   public app?: Application;

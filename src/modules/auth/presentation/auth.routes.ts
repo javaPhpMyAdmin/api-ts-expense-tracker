@@ -1,11 +1,17 @@
 import { Router } from 'express';
 import { authController } from '../infrastructure/dependencies';
+import '../utils';
 
 export class AuthRoutes {
   static get routes(): Router {
     const authRouter = Router();
 
     authRouter.post('/login', authController.loginUser.bind(authController));
+
+    // authRouter.get(
+    //   '/google/callback',
+    //   authController.googleCallback.bind(authController)
+    // );
 
     authRouter.post(
       '/googleAuth',
