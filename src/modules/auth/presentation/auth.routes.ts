@@ -8,11 +8,6 @@ export class AuthRoutes {
 
     authRouter.post('/login', authController.loginUser.bind(authController));
 
-    // authRouter.get(
-    //   '/google/callback',
-    //   authController.googleCallback.bind(authController)
-    // );
-
     authRouter.post(
       '/googleAuth',
       authController.googleAuthUser.bind(authController)

@@ -1,4 +1,3 @@
-import { envs } from '../../../../../shared/infrastructure/envs';
 import {
   AuthRepository,
   AuthUtility,
@@ -8,12 +7,6 @@ import {
 import { CustomError } from '../../../../../shared/domain';
 import { ConsoleLogger } from '../../../../../shared/infrastructure';
 import { User } from '../../../../users/domain';
-import {
-  LoginTicket,
-  OAuth2Client,
-  TokenPayload,
-  VerifyIdTokenOptions,
-} from 'google-auth-library';
 
 const useCase = '[USE CASE - GoogleLoginUser]';
 
@@ -28,6 +21,8 @@ export class GoogleLoginUseCase {
     googleToken: string
   ): Promise<{ user: User | null; refreshToken: string | null } | null> {
     try {
+      console.log('TOKEN BEFORE VERIFY', googleToken);
+
       const ticket = await GoogleAuth.verifyToken(googleToken);
 
       console.log('TIKET GOOGLE AUTH', ticket);

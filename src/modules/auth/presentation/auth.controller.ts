@@ -104,12 +104,12 @@ export class AuthController {
   }
 
   googleAuthUser(req: Request, res: Response) {
-    const googleToken =
-      'eyJhbGciOiJSUzI1NiIsImtpZCI6ImU0YWRmYjQzNmI5ZTE5N2UyZTExMDZhZjJjODQyMjg0ZTQ5ODZhZmYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NDgyODQxMTc5Nzctb2g3ODU3MTF1YzQxMDU3dDB1bnFsOWlvZGVsdDJqZmkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NDgyODQxMTc5Nzctb2g3ODU3MTF1YzQxMDU3dDB1bnFsOWlvZGVsdDJqZmkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDkxMzc2NzIyNzA4MTYwODE4ODMiLCJlbWFpbCI6ImNoZWxvYmF0MTY0MTFAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTcwMTY1NDQ3NCwibmFtZSI6Ik1hcmNlbG8gQmF0aXN0YSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NJZ2dDTThhUDVpbDZYN3NEZEd1VjI0TUx6Z18wcGJSck16a2JtbE1wd3lIdDg9czk2LWMiLCJnaXZlbl9uYW1lIjoiTWFyY2VsbyIsImZhbWlseV9uYW1lIjoiQmF0aXN0YSIsImxvY2FsZSI6ImVzIiwiaWF0IjoxNzAxNjU0Nzc0LCJleHAiOjE3MDE2NTgzNzQsImp0aSI6IjBkNzgwZThhNThkZDZkOTA1ODk4YTdiN2NhNjY2MmI3NmQ1ZmNjYzIifQ.G5bEPWvFm_jGVydXE8GxmdtrfTcmsV6pmLXE38-8rp732DSSIHq__uMIBpGO3j-cNLAbSOCZs4T40XS-Qw07uKU3RUaE4z3xU6jQwLkDr2j9OJnwOIgbVaJU12OMx28Sne4h8ft9d10oUF9O6xpfEZ7-w8JQ5TGjb5n8lD-ZCsBbSw9zjxbjK904qNmHzJB-X2oUGOM3_SYaYNKwhQJ5vlEDv18lCnrvUHgeX5k9jA1IyWR0jiOaAA15DYyxZSAeOXNdYnz5G2EYYAVjLIRDLE7fnm_3dRxH0OwHqnJM4JI1Mf06Rh1Lr3JNsYMpO5uQQIAxTsk2JP7nD0DAVgH7hQ';
-    // if (!googleToken)
-    //   return res
-    //     .status(401)
-    //     .json({ error: 'No token for googleAuth provided' });
+    const googleToken = req.body.token;
+
+    if (!googleToken)
+      return res
+        .status(401)
+        .json({ error: 'No token for googleAuth provided' });
     this.googleLoginUseCase
       .run(googleToken)
       .then((response) => {
