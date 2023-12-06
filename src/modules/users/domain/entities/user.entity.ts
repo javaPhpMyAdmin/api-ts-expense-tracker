@@ -5,8 +5,8 @@ export class User {
     private readonly password: string | undefined,
     private readonly name: string,
     private readonly lastname: string,
-    private readonly phone: number,
-    private readonly address: string,
+    private readonly phone?: number,
+    private readonly address?: string,
     private readonly imageProfile?: string
   ) {}
   public get getId(): string {
@@ -24,10 +24,10 @@ export class User {
   public get getLastname(): string {
     return this.lastname;
   }
-  public get getPhone(): number {
+  public get getPhone(): number | undefined {
     return this.phone;
   }
-  public get getAddress(): string {
+  public get getAddress(): string | undefined {
     return this.address;
   }
 

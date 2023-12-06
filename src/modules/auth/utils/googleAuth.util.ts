@@ -1,6 +1,11 @@
 import { LoginTicket, OAuth2Client, TokenPayload } from 'google-auth-library';
 import { envs } from '../../../shared/infrastructure/envs';
 
+export interface GoogleAuthProps {
+  verifyToken: (token: string) => Promise<LoginTicket>;
+  getPayload: (ticket: LoginTicket) => TokenPayload | undefined;
+}
+
 export class GoogleAuth {
   constructor() {}
 

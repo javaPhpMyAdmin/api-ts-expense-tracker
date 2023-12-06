@@ -50,6 +50,10 @@ export class MongoDataSourceImpl implements AuthDatasource {
         lastname: registerUserDto.lastname,
         phone: registerUserDto.phone,
         address: registerUserDto.address,
+        imageProfile:
+          registerUserDto instanceof GoogleRegisterDto
+            ? registerUserDto.imageProfile
+            : undefined,
       });
 
       await user.save();

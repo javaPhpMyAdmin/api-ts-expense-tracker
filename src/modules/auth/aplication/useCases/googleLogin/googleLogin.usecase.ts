@@ -21,48 +21,48 @@ export class GoogleLoginUseCase {
     googleToken: string
   ): Promise<{ user: User | null; refreshToken: string | null } | null> {
     try {
-      console.log('TOKEN BEFORE VERIFY', googleToken);
-
       const ticket = await GoogleAuth.verifyToken(googleToken);
 
-      console.log('TIKET GOOGLE AUTH', ticket);
       const payload = GoogleAuth.getPayload(ticket);
 
       console.log('====== PAYLOAD FROM GOOGLE AUTHENTICATION ======', payload);
-      // //VERIFY IF THERE IS A USER IN THE DB
-      // let user = await this.authRepository.getUser(payload?.email!);
+      //VERIFY IF THERE IS A USER IN THE DB
+      let user = await this.authRepository.getUser(payload?.email!);
 
       // //IF NO EXIST A USER WITH THIS EMAIL, CREATE A NEW USER AND RETURN IT
-      // if (!user) {
-      //   const lastname = payload?.name; //TODO: APPLY SOME LOGIC TO GET LASTNAME FROM NAME
+      if (!user) {
+        const [error, registerUserDto] = GoogleRegisterDto.create({
+          email: payload?.email,
+          name: payload?.name,
+          lastname: payload?.family_name,
+          imageProfile: payload?.picture,
+        });
 
-      //   const [error, registerUserDto] = GoogleRegisterDto.create({
-      //     email: payload?.email,
-      //     name: payload?.name,
-      //     lastname,
-      //   });
+        console.log('REGISTERED USER DTO', registerUserDto);
+        if (error) throw CustomError.badRequest(error);
 
-      //   if (error) throw CustomError.badRequest(error);
+        user = await this.authRepository.saveUser(registerUserDto!);
+      }
+      console.log('USER RETRIEVED ', user);
+      if (!user) return null;
 
-      //user = await this.authRepository.saveUser(registerUserDto!);
-      // }
-
-      //if (!user) return null;
-
-      // const refreshToken = await this.authUtility.generateRefreshToken({
-      //   userId: user?.getId,
-      //   userEmail: user?.getEmail,
-      //   userName: user?.getName,
-      // });
-
-      // this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
+      const refreshToken = await this.authUtility.generateRefreshToken({
+        userId: user?.getId,
+        userEmail: user?.getEmail,
+        userName: user?.getName,
+      });
+      console.log('REFRESH TOKEN', refreshToken);
+      this.logger.info(`${useCase} - USER LOGGED SUCCESSFULLY...`);
       return { user: null, refreshToken: null };
     } catch (error) {
-      console.log('ERROR GOOGLE LOGIN USE CASE', error);
+      this.logger.error(
+        `${useCase}  ===== ERROR GOOGLE LOGIN USE CASE ===== ${error}`
+      );
 
       if (error instanceof CustomError) {
-        console.log('===== ERROR GOOGLE - LOGIN USE CASE =====', error);
-        this.logger.error(`${useCase} - ${error.message}`);
+        this.logger.error(
+          `${useCase} ===== ERROR GOOGLE LOGIN USE CASE ===== ${error.message}`
+        );
         throw error;
       }
       throw CustomError.internalServer('GOOGLE LOGIN USER USE CASE');

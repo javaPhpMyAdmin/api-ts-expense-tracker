@@ -10,26 +10,6 @@ import { CustomError, ErrorMessages } from '../../../shared/domain';
 import { MakeCookie } from '../utils';
 import { GoogleLoginUseCase } from '../aplication/useCases/googleLogin';
 import '../utils/passport.util';
-import passportGoogle from 'passport-google-oauth20';
-import { envs } from '../../../shared/infrastructure/envs';
-import passport from 'passport';
-
-const GoogleStrategy = passportGoogle.Strategy;
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: envs.GOOGLE_CLIENT_ID,
-      clientSecret: envs.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:5001/api/v1/auth/google/callback',
-    },
-    function (accessToken, refreshToken, profile, cb) {
-      // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      //   return cb(err, user);
-      // });
-      return cb(null, profile);
-    }
-  )
-);
 export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,
@@ -65,8 +45,12 @@ export class AuthController {
               ErrorMessages.IMPOSSIBLE_REGISTER_USER
             ),
           });
+
+        //CREATE A COOKIE FOR SESSION MANAGEMENT
         const customRes = MakeCookie.create(req, res, response?.refreshToken!);
-        res.json({
+
+        //CREATE A CUSTOM RESPONSE RETURNING THE USER LOGGED
+        customRes.json({
           status: 'ok',
           user: response?.userRegistered,
         });
@@ -87,20 +71,16 @@ export class AuthController {
             error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
           });
 
+        //CREATE A COOKIE FOR SESSION MANAGEMENT
         const customRes = MakeCookie.create(req, res, response?.refreshToken!);
+
+        //CREATE A CUSTOM RESPONSE RETURNING THE USER LOGGED
         customRes.status(200).json({
           status: 'ok',
           user: response?.userAuthenticated,
         });
       })
       .catch((e) => this.handleError(e, res));
-  }
-
-  googleCallback(req: Request, res: Response) {
-    passport.authenticate('google', (req: Request, res: Response) => {
-      res.status(200).json({ message: 'user google authenticated' });
-    });
-    console.log('CALL BACK AFTER LOGIN USING GOOGLE');
   }
 
   googleAuthUser(req: Request, res: Response) {
@@ -110,6 +90,7 @@ export class AuthController {
       return res
         .status(401)
         .json({ error: 'No token for googleAuth provided' });
+
     this.googleLoginUseCase
       .run(googleToken)
       .then((response) => {
@@ -117,7 +98,9 @@ export class AuthController {
           return res.status(401).json({
             error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
           });
+        //CREATE A COOKIE FOR SESSION MANAGEMENT
         const customRes = MakeCookie.create(req, res, response?.refreshToken!);
+        //CREATE A CUSTOM RESPONSE RETURNING THE USER LOGGED
         customRes.status(200).json({
           status: 'ok',
           user: response?.user,
@@ -138,7 +121,10 @@ export class AuthController {
             error: CustomError.unauthorized(ErrorMessages.UNAUTHORIZED),
           });
 
+        //CREATE A COOKIE FOR SESSION MANAGEMENT
         const customRes = MakeCookie.create(req, res, response?.refreshToken);
+
+        //CREATE A CUSTOM RESPONSE RETURNING THE USER LOGGED
         customRes.status(200).json({
           message: 'Token has been refreshed',
           token: response?.refreshToken,

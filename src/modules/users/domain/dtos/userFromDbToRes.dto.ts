@@ -1,12 +1,12 @@
-import { UserEmailDto } from ".";
+import { UserEmailDto } from '.';
 
 export class UserFromDb {
   private constructor(
     public email: string,
     public name: string,
     public lastname: string,
-    public phone: number,
-    public address: string,
+    public phone?: number,
+    public address?: string,
     public imageProfile?: string
   ) {}
 
@@ -21,11 +21,9 @@ export class UserFromDb {
       imageProfileFromDb,
     } = object;
 
-    if (!nameFromDb) return ["Missing name"];
-    if (!emailFromDb) return ["Missing email"];
-    if (!phoneFromDb) return ["Missing phone"];
-    if (!addressFromDb) return ["Missing address"];
-    if (!lastnameFromDb) return ["Missing lastname"];
+    if (!nameFromDb) return ['Missing name'];
+    if (!emailFromDb) return ['Missing email'];
+    if (!lastnameFromDb) return ['Missing lastname'];
 
     return [
       undefined,

@@ -1,12 +1,13 @@
-import { User } from "modules/users/domain";
+import { User } from 'modules/users/domain';
 
 interface UserMapped {
   id: string;
   email: string;
   name: string;
   lastname: string;
-  phone: number;
-  address: string;
+  phone?: number;
+  address?: string;
+  imageProfile?: string;
 }
 
 export class UserToMiddleware {
@@ -20,6 +21,7 @@ export class UserToMiddleware {
       lastname: userToMap.getLastname,
       phone: userToMap.getPhone,
       address: userToMap.getAddress,
+      imageProfile: userToMap.getImageProfile,
     };
     return userMapped;
   }

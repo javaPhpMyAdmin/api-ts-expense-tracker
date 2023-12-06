@@ -14,9 +14,13 @@ import {
   LogoutUserUseCase,
 } from '..';
 import { ConsoleLogger } from '../../../shared/infrastructure';
+import { GoogleAuth } from 'google-auth-library';
 
 //UTILITY FOR AUTHENTICATION
 const authUtility = new AuthUtility();
+
+//GOOGLE UTILITY
+const googleAuth = new GoogleAuth();
 
 //LOGGER INSTANCE
 const logger = new ConsoleLogger();
